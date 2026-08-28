@@ -1,0 +1,20 @@
+/* Ampliar el ancho de los campos de fecha personalizados */
+.o_field_widget[name="fecha_desde"],
+.o_field_widget[name="fecha_hasta"] {
+    min-width: 280px !important;
+    max-width: 350px !important;
+}
+
+/* Reducir ligeramente el tamaño de la fuente dentro de los campos */
+.o_field_widget[name="fecha_desde"] input,
+.o_field_widget[name="fecha_hasta"] input,
+.o_field_widget[name="fecha_desde"] .o_datepicker_input,
+.o_field_widget[name="fecha_hasta"] .o_datepicker_input {
+    font-size: 12px !important;
+}
+
+/* Ajustar también las etiquetas para que quepan */
+.o_form_view .o_group .o_field_widget[name="fecha_desde"] label,
+.o_form_view .o_group .o_field_widget[name="fecha_hasta"] label {
+    font-size: 13px !important;
+}

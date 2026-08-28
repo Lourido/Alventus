@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Acción de servidor para exportar tareas a ICS -->
+    <record id="action_export_project_tasks_ics" model="ir.actions.server">
+        <field name="name">Exportar tareas a ICS</field>
+        <field name="model_id" ref="project.model_project_project"/>
+        <field name="binding_model_id" ref="project.model_project_project"/>
+        <field name="binding_view_types">kanban,list,form</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_export_tasks_to_ics()</field>
+    </record>
+
+    <!-- Insertar campo Usuario Responsable después del nombre -->
+    <record id="view_project_form_inherit_user" model="ir.ui.view">
+        <field name="name">project.project.form.inherit.user</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="user_id" string="Usuario responsable" widget="many2one_avatar_user"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

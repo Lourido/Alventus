@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Crear una acción NUEVA que abra el Kanban de proyectos -->
+        <record id="action_alf_viajes_kanban" model="ir.actions.act_window">
+            <field name="name">Viajes</field>
+            <field name="res_model">project.project</field>
+            <field name="view_mode">kanban,form</field>
+            <field name="view_id" ref="project.view_project_kanban"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    ¡Crea tu primer viaje!
+                </p>
+            </field>
+        </record>
+
+        <!-- Crear un menú NUEVO que use esta acción -->
+        <menuitem id="menu_alf_viajes"
+                  name="Viajes"
+                  parent="project.menu_main_pm"
+                  action="action_alf_viajes_kanban"
+                  sequence="10"/>
+
+        <!-- Renombrar el menú raíz -->
+        <record id="project.menu_main_pm" model="ir.ui.menu">
+            <field name="name">Viajes</field>
+        </record>
+        
+        <!-- Renombrar el menú de tareas -->
+        <record id="project.menu_project_management" model="ir.ui.menu">
+            <field name="name">Tareas de Viaje</field>
+        </record>
+    </data>
+</odoo>

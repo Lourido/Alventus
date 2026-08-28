@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Wizard: Importar ICS -->
+    <record id="view_project_import_ics_wizard_form" model="ir.ui.view">
+        <field name="name">project.import.ics.wizard.form</field>
+        <field name="model">project.import.ics.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Importar viaje desde ICS">
+                <group>
+                    <field name="ics_file" filename="ics_filename"/>
+                    <field name="ics_filename" invisible="1"/>
+                </group>
+                <footer>
+                    <button name="action_import" type="object" string="Importar" class="btn-primary"/>
+                    <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_project_import_ics_wizard" model="ir.actions.act_window">
+        <field name="name">Importar ICS</field>
+        <field name="res_model">project.import.ics.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Wizard: Crear viaje con etapas por días -->
+    <record id="view_project_create_with_tasks_wizard_form" model="ir.ui.view">
+        <field name="name">project.create.with.tasks.wizard.form</field>
+        <field name="model">project.create.with.tasks.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Crear viaje con etapas por días">
+                <group>
+                    <field name="name" placeholder="Ej: Viaje a Roma"/>
+                    <field name="start_date"/>
+                    <field name="num_days"/>
+                </group>
+                <footer>
+                    <!-- 👇 CAMBIO: Ahora dice "Crear Viaje" -->
+                    <button name="action_create" type="object" string="Crear Viaje" class="btn-primary"/>
+                    <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_project_create_with_tasks_wizard" model="ir.actions.act_window">
+        <field name="name">Nuevo viaje con tareas</field>
+        <field name="res_model">project.create.with.tasks.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Acciones de servidor para el menú de Acción (⚙️) -->
+    <record id="action_server_project_create_with_tasks" model="ir.actions.server">
+        <field name="name">Nuevo viaje con tareas</field>
+        <field name="model_id" ref="project.model_project_project"/>
+        <field name="binding_model_id" ref="project.model_project_project"/>
+        <field name="binding_view_types">list,kanban,form</field>
+        <field name="state">code</field>
+        <field name="code">
+action = {
+    'type': 'ir.actions.act_window',
+    'name': 'Nuevo viaje con tareas',
+    'res_model': 'project.create.with.tasks.wizard',
+    'view_mode': 'form',
+    'target': 'new',
+}
+        </field>
+    </record>
+
+    <record id="action_server_project_import_ics" model="ir.actions.server">
+        <field name="name">Importar ICS</field>
+        <field name="model_id" ref="project.model_project_project"/>
+        <field name="binding_model_id" ref="project.model_project_project"/>
+        <field name="binding_view_types">list,kanban,form</field>
+        <field name="state">code</field>
+        <field name="code">
+action = {
+    'type': 'ir.actions.act_window',
+    'name': 'Importar ICS',
+    'res_model': 'project.import.ics.wizard',
+    'view_mode': 'form',
+    'target': 'new',
+}
+        </field>
+    </record>
+
+    <!-- Menús en la barra superior -->
+    <menuitem id="menu_project_create_with_tasks"
+              name="Nuevo viaje con tareas"
+              parent="project.menu_projects"
+              action="action_project_create_with_tasks_wizard"
+              sequence="5"/>
+
+    <menuitem id="menu_project_import_ics"
+              name="Importar ICS"
+              parent="project.menu_projects"
+              action="action_project_import_ics_wizard"
+              sequence="10"/>
+        <!-- Acción para la vista Lista de Viajes -->
+    <record id="action_view_alf_projects_list" model="ir.actions.act_window">
+        <field name="name">Viajes</field>
+        <field name="res_model">project.project</field>
+        <field name="view_mode">list,kanban,form</field>
+    </record>
+</odoo>

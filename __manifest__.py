@@ -21,5 +21,5 @@
     },
     'installable': True,
     'application': False,
-    'post_init_hook': '_rename_project_menus_hook',
+    'post_init_hook': '_rename_project_to_trip_hook',  # 👈 ESTA LÍNEA ES CLAVE
 }

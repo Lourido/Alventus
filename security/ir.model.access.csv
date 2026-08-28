@@ -2,4 +2,4 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_project_create_wizard,project.create.wizard,model_project_create_with_tasks_wizard,project.group_project_user,1,1,1,1
 access_project_create_wizard_gestor,project.create.wizard.gestor,model_project_create_with_tasks_wizard,alf_alventus.group_gestor_viajes,1,1,1,1
 access_project_import_wizard,project.import.wizard,model_project_import_ics_wizard,project.group_project_user,1,1,1,1
-access_project_import_wizard_gestor,project.import.wizard.gestor,model_project_import_ics_wizard,alf_alventus.group_gestor_viajes,1,1,1,1
+access_project_import_wizard_gestor,project.import.wizard.gestor,model_project_import_ics_wizard,alf_alventus.group_gestor_viajes,1,1,1,0

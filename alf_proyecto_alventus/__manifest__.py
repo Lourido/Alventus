@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'ALF - Gestión de Viajes (ICS)',
-    'version': '18.0.8.1.0',
+    'version': '18.0.8.0.0',
     'category': 'Project',
     'summary': 'Gestión de viajes con importación/exportación ICS y creación por días',
     'depends': ['project'],
@@ -13,6 +13,7 @@
         'views/project_project_views.xml',
         'views/project_wizard_views.xml',
         'views/project_menu_views.xml',
+        'views/webclient_templates.xml',  # 👈 AÑADE ESTA LÍNEA
     ],
     'assets': {
         'web.assets_backend': [
@@ -21,5 +22,5 @@
     },
     'installable': True,
     'application': False,
-    'post_init_hook': '_rename_project_to_trip_hook',  # 👈 ESTA LÍNEA ES CLAVE
+    'post_init_hook': '_rename_project_to_trip_hook',
 }

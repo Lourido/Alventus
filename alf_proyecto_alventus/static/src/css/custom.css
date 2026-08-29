@@ -18,3 +18,18 @@
 .o_form_view .o_group .o_field_widget[name="fecha_hasta"] label {
     font-size: 13px !important;
 }
+
+/* Ajustar el tamaño del logo de la compañía en la navbar */
+.o_main_navbar .o_company_logo {
+    max-height: 35px;
+    max-width: 150px;
+    object-fit: contain;
+    margin-right: 10px;
+}
+
+/* Ajustar el texto de la marca si no hay logo */
+.o_main_navbar .o_brand_text {
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+}

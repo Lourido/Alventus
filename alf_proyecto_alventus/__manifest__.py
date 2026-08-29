@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'ALF - Gestión de Viajes (ICS)',
-    'version': '18.0.8.0.0',
+    'version': '18.0.8.1.0',
     'category': 'Project',
     'summary': 'Gestión de viajes con importación/exportación ICS y creación por días',
     'depends': ['project'],

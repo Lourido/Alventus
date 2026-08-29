@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="0">
-        <!-- Grupo "Gestor de Viajes Restringido" -->
+        <!-- Grupo "Gestor de Viajes Restringido" (SIN heredar de project.group_project_user) -->
         <record id="group_gestor_viajes" model="res.groups">
             <field name="name">Gestor de Viajes (Restringido)</field>
             <field name="category_id" ref="base.module_category_services_project"/>
-            <field name="comment">Puede ver, crear y editar los viajes de los que es responsable. No puede borrar viajes ni etapas.</field>
+            <field name="comment">Puede hacer todo con los viajes de los que es responsable, excepto borrarlos. Solo ve sus propios viajes.</field>
         </record>
 
-        <!-- Regla: Puede ver, crear y editar proyectos donde es responsable, pero NO borrarlos -->
+        <!-- Regla para PROYECTOS: Solo ver los suyos, todo excepto borrar -->
         <record id="rule_project_gestor" model="ir.rule">
-            <field name="name">Gestor Viajes: gestionar sus proyectos</field>
+            <field name="name">Gestor Viajes: solo sus proyectos (no borrar)</field>
             <field name="model_id" ref="project.model_project_project"/>
             <field name="domain_force">[('user_id', '=', user.id)]</field>
             <field name="groups" eval="[(4, ref('group_gestor_viajes'))]"/>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="True"/>      <!-- 👈 CAMBIADO A TRUE -->
-            <field name="perm_unlink" eval="False"/>    <!-- 👈 SE MANTIENE FALSE (No puede borrar) -->
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
         </record>
 
-        <!-- Regla: Puede gestionar tareas de sus proyectos pero NO borrarlas -->
+        <!-- Regla para TAREAS: Solo las de sus proyectos, todo excepto borrar -->
         <record id="rule_task_gestor" model="ir.rule">
-            <field name="name">Gestor Viajes: gestionar tareas de sus proyectos</field>
+            <field name="name">Gestor Viajes: solo tareas de sus proyectos (no borrar)</field>
             <field name="model_id" ref="project.model_project_task"/>
             <field name="domain_force">[('project_id.user_id', '=', user.id)]</field>
             <field name="groups" eval="[(4, ref('group_gestor_viajes'))]"/>
@@ -32,9 +32,9 @@
             <field name="perm_unlink" eval="False"/>
         </record>
 
-        <!-- Regla: Puede gestionar etapas de sus proyectos pero NO borrarlas -->
+        <!-- Regla para ETAPAS: Solo las de sus proyectos, todo excepto borrar -->
         <record id="rule_stage_gestor" model="ir.rule">
-            <field name="name">Gestor Viajes: gestionar etapas de sus proyectos</field>
+            <field name="name">Gestor Viajes: solo etapas de sus proyectos (no borrar)</field>
             <field name="model_id" ref="project.model_project_task_type"/>
             <field name="domain_force">[('project_ids.user_id', '=', user.id)]</field>
             <field name="groups" eval="[(4, ref('group_gestor_viajes'))]"/>

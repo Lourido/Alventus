@@ -14,12 +14,9 @@ class ResUsers(models.Model):
         Sobrescribe la creación de usuarios para configurar automáticamente
         a los usuarios no administradores.
         """
-        # Crear los usuarios primero
         users = super().create(vals_list)
         
-        # Configurar cada usuario recién creado
         for user in users:
-            # Verificar si NO es administrador de forma explícita
             admin_group = self.env.ref('base.group_system', raise_if_not_found=False)
             is_admin = admin_group and admin_group.id in user.groups_id.ids
             
@@ -34,7 +31,7 @@ class ResUsers(models.Model):
     def _configure_as_trip_manager(self):
         """
         Configura al usuario como Gestor de Viajes con acceso exclusivo
-        al módulo de Viajes.
+        al módulo de Viajes. NO asigna project.group_project_user.
         """
         self.ensure_one()
         
@@ -42,20 +39,16 @@ class ResUsers(models.Model):
         
         # Obtener los grupos necesarios
         group_user = self.env.ref('base.group_user', raise_if_not_found=False)
-        group_project_user = self.env.ref('project.group_project_user', raise_if_not_found=False)
         group_gestor_viajes = self.env.ref('alf_proyecto_alventus.group_gestor_viajes', raise_if_not_found=False)
         
         # Obtener la acción de Viajes (Kanban de proyectos)
         action_viajes = self.env.ref('project.open_view_project_all', raise_if_not_found=False)
         
-        # Construir la lista de grupos (SOLO estos 3)
+        # Construir la lista de grupos (SOLO estos 2, SIN project.group_project_user)
         group_ids = []
         if group_user:
             group_ids.append(group_user.id)
             _logger.info(f"Añadiendo grupo: {group_user.name}")
-        if group_project_user:
-            group_ids.append(group_project_user.id)
-            _logger.info(f"Añadiendo grupo: {group_project_user.name}")
         if group_gestor_viajes:
             group_ids.append(group_gestor_viajes.id)
             _logger.info(f"Añadiendo grupo: {group_gestor_viajes.name}")

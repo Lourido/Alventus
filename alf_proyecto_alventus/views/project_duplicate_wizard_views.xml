@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista del wizard de duplicación -->
+    <record id="view_project_duplicate_wizard_form" model="ir.ui.view">
+        <field name="name">project.duplicate.wizard.form</field>
+        <field name="model">project.duplicate.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Duplicar viaje con nueva fecha">
+                <group>
+                    <field name="project_id" invisible="1"/>
+                    <field name="new_name"/>
+                    <field name="new_start_date"/>
+                </group>
+                <footer>
+                    <button name="action_duplicate" type="object" string="Duplicar" class="btn-primary"/>
+                    <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Acción que abre el wizard -->
+    <record id="action_project_duplicate_wizard" model="ir.actions.act_window">
+        <field name="name">Duplicar viaje con nueva fecha</field>
+        <field name="res_model">project.duplicate.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

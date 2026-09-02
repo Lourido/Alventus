@@ -10,10 +10,10 @@
         'security/ir.model.access.csv',
         'data/res_users.xml',
         'views/project_task_views.xml',
-        'views/project_project_views.xml',
         'views/project_wizard_views.xml',
+        'views/project_duplicate_wizard_views.xml',
+        'views/project_project_views.xml',
         'views/project_menu_views.xml',
-        #'views/webclient_templates.xml',  # 👈 AÑADE ESTA LÍNEA
     ],
     'assets': {
         'web.assets_backend': [
@@ -22,5 +22,5 @@
     },
     'installable': True,
     'application': False,
-    'post_init_hook': '_rename_project_to_trip_hook',
+    #'post_init_hook': '_rename_project_to_trip_hook',
 }

@@ -1,34 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="0">
-        <!-- Crear una acción NUEVA que abra el Kanban de proyectos -->
-        <record id="action_alf_viajes_kanban" model="ir.actions.act_window">
-            <field name="name">Viajes</field>
-            <field name="res_model">project.project</field>
-            <field name="view_mode">kanban,form</field>
-            <field name="view_id" ref="project.view_project_kanban"/>
-            <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">
-                    ¡Crea tu primer viaje!
-                </p>
-            </field>
-        </record>
+    <!-- Acción para abrir el Kanban de proyectos -->
+    <record id="action_project_kanban" model="ir.actions.act_window">
+        <field name="name">Viajes</field>
+        <field name="res_model">project.project</field>
+        <field name="view_mode">kanban,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crea tu primer viaje
+            </p>
+        </field>
+    </record>
 
-        <!-- Crear un menú NUEVO que use esta acción -->
-        <menuitem id="menu_alf_viajes"
-                  name="Viajes"
-                  parent="project.menu_main_pm"
-                  action="action_alf_viajes_kanban"
-                  sequence="10"/>
+    <!-- Menú principal de Viajes -->
+    <menuitem id="menu_project_main"
+              name="Viajes"
+              web_icon="alf_proyecto_alventus,static/description/icon.png"
+              sequence="20"/>
 
-        <!-- Renombrar el menú raíz -->
-        <record id="project.menu_main_pm" model="ir.ui.menu">
-            <field name="name">Viajes</field>
-        </record>
-        
-        <!-- Renombrar el menú de tareas -->
-        <record id="project.menu_project_management" model="ir.ui.menu">
-            <field name="name">Tareas de Viaje</field>
-        </record>
-    </data>
+    <!-- Submenú: Proyectos (Kanban) -->
+    <menuitem id="menu_project_projects"
+              name="Proyectos"
+              parent="menu_project_main"
+              action="action_project_kanban"
+              sequence="1"/>
+
+    <!-- Submenú: Nuevo viaje con tareas -->
+    <menuitem id="menu_project_create_with_tasks"
+              name="Nuevo viaje con tareas"
+              parent="menu_project_main"
+              action="action_project_create_with_tasks_wizard"
+              sequence="5"/>
+
+    <!-- Submenú: Importar ICS -->
+    <menuitem id="menu_project_import_ics"
+              name="Importar ICS"
+              parent="menu_project_main"
+              action="action_project_import_ics_wizard"
+              sequence="10"/>
 </odoo>

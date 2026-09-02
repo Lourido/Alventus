@@ -1,25 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Acción de servidor para exportar tareas a ICS -->
-    <record id="action_export_project_tasks_ics" model="ir.actions.server">
-        <field name="name">Exportar tareas a ICS</field>
-        <field name="model_id" ref="project.model_project_project"/>
-        <field name="binding_model_id" ref="project.model_project_project"/>
-        <field name="binding_view_types">kanban,list,form</field>
-        <field name="state">code</field>
-        <field name="code">action = records.action_export_tasks_to_ics()</field>
+        <!-- 1. Vista de lista (NO editable) para los Archivos de Ruta -->
+    <record id="view_project_route_file_list" model="ir.ui.view">
+        <field name="name">project.route.file.list</field>
+        <field name="model">project.route.file</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="file_data" filename="file_name" string="Archivo"/>
+                <field name="file_name" string="Nombre"/>
+                <field name="description" string="Descripción / Notas"/>
+            </list>
+        </field>
     </record>
 
-    <!-- Insertar campo Usuario Responsable después del nombre -->
-    <record id="view_project_form_inherit_user" model="ir.ui.view">
-        <field name="name">project.project.form.inherit.user</field>
+    <!-- 2. Vista de formulario emergente para crear/editar archivos de ruta -->
+    <record id="view_project_route_file_form" model="ir.ui.view">
+        <field name="name">project.route.file.form</field>
+        <field name="model">project.route.file</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="file_data" filename="file_name" string="Archivo"/>
+                    <field name="file_name" readonly="1" string="Nombre del archivo"/>
+                    <field name="description" string="Descripción / Notas"/>
+                </group>
+            </form>
+        </field>
+    </record>
+	
+    <!-- 2. Herencia del formulario del proyecto -->
+    <record id="view_project_form_inherit_alf_v2" model="ir.ui.view">
+        <field name="name">project.project.form.inherit.alf.v2</field>
         <field name="model">project.project</field>
         <field name="inherit_id" ref="project.edit_project"/>
         <field name="priority">99</field>
         <field name="arch" type="xml">
+            
+            <!-- Botón Duplicar viaje -->
+            <xpath expr="//header" position="inside">
+                <button name="%(action_project_duplicate_wizard)d" 
+                        type="action" 
+                        string="Duplicar viaje" 
+                        class="btn-secondary" 
+                        invisible="not id"/>
+            </xpath>
+
+            <!-- Campos superiores -->
             <xpath expr="//field[@name='name']" position="after">
                 <field name="user_id" string="Usuario responsable" widget="many2one_avatar_user"/>
+                <field name="start_date" string="Fecha de inicio" invisible="1"/>
             </xpath>
+
+            <!-- Ocultar pestañas -->
+            <xpath expr="//page[@name='description']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            
+            <xpath expr="//page[@name='settings']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//page[@name='analytic']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- Pestaña Contactos de Referencia -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Contactos de Referencia" name="reference_contacts">
+                    <field name="reference_contact_ids" widget="many2many_tags"/>
+                </page>
+            </xpath>
+
+            <!-- Pestaña Archivos de Ruta (con formulario emergente) -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Archivos de Ruta" name="route_files">
+                    <field name="route_file_ids">
+                        <list>
+                            <field name="sequence" widget="handle"/>
+                            <field name="file_data" filename="file_name" string="Archivo"/>
+                            <field name="file_name" string="Nombre"/>
+                            <field name="description" string="Descripción / Notas"/>
+                        </list>
+                    </field>
+                    <div class="alert alert-info mt-2" role="alert">
+                        <strong>Instrucciones:</strong> Pulsa "Añadir" para abrir el formulario, sube el archivo y escribe la descripción. 
+                        El nombre del archivo se guardará automáticamente.
+                    </div>
+                </page>
+            </xpath>
+
         </field>
     </record>
 </odoo>

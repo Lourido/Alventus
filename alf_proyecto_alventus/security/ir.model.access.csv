@@ -6,3 +6,7 @@ access_project_import_wizard_gestor,project.import.wizard.gestor,model_project_i
 access_project_project_gestor,project.project.gestor,project.model_project_project,alf_proyecto_alventus.group_gestor_viajes,1,1,1,0
 access_project_task_gestor,project.task.gestor,project.model_project_task,alf_proyecto_alventus.group_gestor_viajes,1,1,1,0
 access_project_stage_gestor,project.stage.gestor,project.model_project_task_type,alf_proyecto_alventus.group_gestor_viajes,1,1,1,0
+access_project_duplicate_wizard,project.duplicate.wizard,model_project_duplicate_wizard,project.group_project_user,1,1,1,1
+access_project_duplicate_wizard_gestor,project.duplicate.wizard.gestor,model_project_duplicate_wizard,alf_proyecto_alventus.group_gestor_viajes,1,1,1,1
+access_project_route_file_user,project.route.file.user,model_project_route_file,base.group_user,1,1,1,1
+access_project_route_file_admin,project.route.file.admin,model_project_route_file,base.group_system,1,1,1,1

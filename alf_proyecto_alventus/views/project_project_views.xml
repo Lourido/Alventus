@@ -52,6 +52,26 @@
                 <field name="start_date" string="Fecha de inicio" invisible="1"/>
             </xpath>
 
+            <!-- Responsables adicionales: junto a "Gerente de proyecto" (mismo campo user_id,
+                 posicion estandar del formulario), para que se vea claramente con su etiqueta,
+                 en vez de ir apretado junto al titulo donde pasaba desapercibido.
+                 Nota: este campo ya NO da visibilidad por si solo (ver security.xml); es solo
+                 informativo, salvo el campo "invisible" de mas abajo que oculta el proyecto a
+                 todos salvo Administracion. -->
+            <xpath expr="//group//field[@name='user_id']" position="after">
+                <field name="responsible_user_ids" string="Responsables adicionales" widget="many2many_avatar_user"/>
+                <field name="invisible" invisible="1"/>
+                <label for="invisible" string="Visibilidad"/>
+                <div name="invisible_toggle">
+                    <button name="action_toggle_invisible" type="object"
+                            string="VISIBLE" class="badge rounded-pill text-bg-success border-0"
+                            invisible="invisible"/>
+                    <button name="action_toggle_invisible" type="object"
+                            string="INVISIBLE" class="badge rounded-pill text-bg-danger border-0"
+                            invisible="not invisible"/>
+                </div>
+            </xpath>
+
             <!-- Ocultar pestañas -->
             <xpath expr="//page[@name='description']" position="attributes">
                 <attribute name="invisible">1</attribute>
@@ -90,6 +110,52 @@
                 </page>
             </xpath>
 
+        </field>
+    </record>
+
+    <!-- 3. Kanban de viajes: mostrar el nombre del Gestor del proyecto como texto
+         (no solo el avatar). Las fechas de inicio/fin (etapa 1 / ultima etapa) ya
+         se muestran solas porque se guardan en los campos estandar date_start/date,
+         que la tarjeta de Kanban de "project" ya pinta de serie. -->
+    <record id="view_project_kanban_inherit_alf" model="ir.ui.view">
+        <field name="name">project.project.kanban.inherit.alf</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.view_project_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='last_update_color']" position="after">
+                <field name="invisible"/>
+                <field name="invisible_label"/>
+            </xpath>
+            <xpath expr="//field[@name='user_id'][@widget='many2one_avatar_user']" position="after">
+                <span t-if="record.user_id.value" t-out="record.user_id.value" class="ms-1 small text-truncate"/>
+                <span t-att-class="record.invisible.raw_value ? 'badge rounded-pill ms-1 text-bg-danger' : 'badge rounded-pill ms-1 text-bg-success'" t-out="record.invisible_label.value"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- 4. Lista de viajes: la columna "Fecha planeada" (date_start/date) ya existe
+         en la vista estandar pero viene oculta por defecto (optional="hide"). La
+         dejamos visible sin que el usuario tenga que activarla a mano. -->
+    <record id="view_project_list_inherit_alf" model="ir.ui.view">
+        <field name="name">project.project.list.inherit.alf</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.view_project"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date_start']" position="attributes">
+                <attribute name="optional">show</attribute>
+            </xpath>
+            <!-- Un boton por columna crearia DOS columnas (una siempre vacia), asi
+                 que aqui usamos una unica insignia de solo lectura (widget "badge",
+                 que no admite booleanos: por eso el texto viene del campo calculado
+                 invisible_label, pero el color se decide con el booleano real
+                 "invisible"). Para cambiar el valor, se abre el proyecto (el
+                 formulario si tiene los botones para marcar/desmarcar). -->
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="invisible" column_invisible="1"/>
+                <field name="invisible_label" string="Visibilidad" optional="show"
+                       widget="badge"
+                       decoration-danger="invisible" decoration-success="not invisible"/>
+            </xpath>
         </field>
     </record>
 </odoo>

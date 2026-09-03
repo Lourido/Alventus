@@ -20,10 +20,15 @@ class ProjectCreateWithTasksWizard(models.TransientModel):
         self.ensure_one()
 
         # 1. Crear el proyecto (viaje)
+        # date_start / date son los campos estandar de Odoo (se muestran solos en
+        # el Kanban y en la lista de proyectos): "etapa 1" = fecha de inicio,
+        # "ultima etapa" = fecha de inicio + (numero de dias - 1).
         project = self.env['project.project'].create({
             'name': self.name,
             'user_id': self.env.uid,
             'start_date': self.start_date,
+            'date_start': self.start_date,
+            'date': self.start_date + timedelta(days=self.num_days - 1),
         })
 
         # 2. Crear la etapa "Día 0 - Antes de salir" (una semana antes del inicio)

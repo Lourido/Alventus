@@ -8,40 +8,112 @@
             <field name="comment">Puede hacer todo con los viajes de los que es responsable, excepto borrarlos. Solo ve sus propios viajes.</field>
         </record>
 
-        <!-- Regla para PROYECTOS: Solo ver los suyos, todo excepto borrar -->
-        <record id="rule_project_gestor" model="ir.rule">
-            <field name="name">Gestor Viajes: solo sus proyectos (no borrar)</field>
+        <!-- =====================================================================
+             VISIBILIDAD DE PROYECTOS (VIAJES) POR RESPONSABLE
+             Estas reglas son GLOBALES (sin "groups"), por lo que Odoo las aplica
+             en AND con cualquier otra regla existente (incluidas las que trae el
+             modulo "project" de serie, que por si solas podrian ser demasiado
+             permisivas). Asi se garantiza que NINGUN usuario, sea cual sea su
+             grupo de proyectos, pueda ver un viaje/tarea/etapa que no sea suyo.
+
+             Excepcion: los usuarios con acceso de Administracion/Ajustes
+             (base.group_system) quedan exentos de la restriccion mediante
+             user.has_group(...) dentro del propio dominio, y ademas cuentan con
+             una regla adicional que les da acceso total, para que vean
+             literalmente todos los proyectos.
+             ===================================================================== -->
+
+        <!-- PROYECTOS - LECTURA: cada usuario solo ve aquellos en los que es el
+             responsable Y que no esten marcados como "Invisible". Separada de la
+             regla de escritura de abajo a proposito: si la misma regla controlase
+             tambien la escritura, Odoo comprobaria el dominio DESPUES de guardar,
+             y como marcar la casilla "Invisible" hace que el dominio deje de
+             cumplirse, cualquier usuario se bloquearia a si mismo al intentar
+             ocultar su propio proyecto (error de acceso). -->
+        <record id="rule_project_gestor_read" model="ir.rule">
+            <field name="name">Proyectos: lectura, solo los propios y visibles</field>
             <field name="model_id" ref="project.model_project_project"/>
-            <field name="domain_force">[('user_id', '=', user.id)]</field>
-            <field name="groups" eval="[(4, ref('group_gestor_viajes'))]"/>
+            <field name="domain_force">['|', '&amp;', ('user_id', '=', user.id), ('invisible', '=', False), (1, '=', 1) if (user.has_group('base.group_system') or user.has_group('base.group_portal') or user.has_group('base.group_public')) else (0, '=', 1)]</field>
+            <field name="groups" eval="[(5, 0, 0)]"/>
             <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
             <field name="perm_unlink" eval="False"/>
         </record>
 
-        <!-- Regla para TAREAS: Solo las de sus proyectos, todo excepto borrar -->
+        <!-- PROYECTOS - ESCRITURA/CREACION/BORRADO: solo depende de ser el
+             responsable (NO del campo "Invisible"), para que cualquier usuario
+             pueda marcar y desmarcar "Invisible" en sus propios proyectos sin
+             quedarse bloqueado fuera. -->
+        <record id="rule_project_gestor_write" model="ir.rule">
+            <field name="name">Proyectos: gestion, solo los propios</field>
+            <field name="model_id" ref="project.model_project_project"/>
+            <field name="domain_force">['|', ('user_id', '=', user.id), (1, '=', 1) if (user.has_group('base.group_system') or user.has_group('base.group_portal') or user.has_group('base.group_public')) else (0, '=', 1)]</field>
+            <field name="groups" eval="[(5, 0, 0)]"/>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- TAREAS: solo las de los proyectos propios -->
         <record id="rule_task_gestor" model="ir.rule">
-            <field name="name">Gestor Viajes: solo tareas de sus proyectos (no borrar)</field>
+            <field name="name">Tareas: solo las de proyectos propios (usuario responsable)</field>
             <field name="model_id" ref="project.model_project_task"/>
-            <field name="domain_force">[('project_id.user_id', '=', user.id)]</field>
-            <field name="groups" eval="[(4, ref('group_gestor_viajes'))]"/>
+            <field name="domain_force">['|', '&amp;', ('project_id.user_id', '=', user.id), ('project_id.invisible', '=', False), (1, '=', 1) if (user.has_group('base.group_system') or user.has_group('base.group_portal') or user.has_group('base.group_public')) else (0, '=', 1)]</field>
+            <field name="groups" eval="[(5, 0, 0)]"/>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>
             <field name="perm_create" eval="True"/>
-            <field name="perm_unlink" eval="False"/>
+            <field name="perm_unlink" eval="True"/>
         </record>
 
-        <!-- Regla para ETAPAS: Solo las de sus proyectos, todo excepto borrar -->
+        <!-- ETAPAS: solo las de los proyectos propios -->
         <record id="rule_stage_gestor" model="ir.rule">
-            <field name="name">Gestor Viajes: solo etapas de sus proyectos (no borrar)</field>
+            <field name="name">Etapas: solo las de proyectos propios (usuario responsable)</field>
             <field name="model_id" ref="project.model_project_task_type"/>
-            <field name="domain_force">[('project_ids.user_id', '=', user.id)]</field>
-            <field name="groups" eval="[(4, ref('group_gestor_viajes'))]"/>
+            <field name="domain_force">['|', '&amp;', ('project_ids.user_id', '=', user.id), ('project_ids.invisible', '=', False), (1, '=', 1) if (user.has_group('base.group_system') or user.has_group('base.group_portal') or user.has_group('base.group_public')) else (0, '=', 1)]</field>
+            <field name="groups" eval="[(5, 0, 0)]"/>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>
             <field name="perm_create" eval="True"/>
-            <field name="perm_unlink" eval="False"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- Refuerzo: Administracion ve absolutamente todos los proyectos/tareas/
+             etapas, incluso los que el modulo "project" de serie ocultaria por
+             privacidad (visibilidad "Solo invitados"). -->
+        <record id="rule_project_admin_all" model="ir.rule">
+            <field name="name">Proyectos: Administracion ve todos</field>
+            <field name="model_id" ref="project.model_project_project"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="rule_task_admin_all" model="ir.rule">
+            <field name="name">Tareas: Administracion ve todas</field>
+            <field name="model_id" ref="project.model_project_task"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="rule_stage_admin_all" model="ir.rule">
+            <field name="name">Etapas: Administracion ve todas</field>
+            <field name="model_id" ref="project.model_project_task_type"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
         </record>
     </data>
 </odoo>

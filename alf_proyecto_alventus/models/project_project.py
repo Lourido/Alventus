@@ -11,7 +11,39 @@ class ProjectProject(models.Model):
     _inherit = 'project.project'
 
     start_date = fields.Date(string='Fecha de inicio del viaje')
-    
+
+    # -1. Oculto para todos (excepto Administracion). Se usa para "borrar" un
+    # viaje sin eliminarlo: mientras este marcado, nadie salvo Administracion
+    # puede verlo, ni siquiera el propio Gestor del proyecto.
+    invisible = fields.Boolean(string='Invisible', default=False)
+
+    # Solo para pintar la insignia VISIBLE/INVISIBLE en la lista de proyectos
+    # (el widget "badge" no admite campos booleanos, solo texto/seleccion).
+    invisible_label = fields.Char(string='Visibilidad', compute='_compute_invisible_label')
+
+    @api.depends('invisible')
+    def _compute_invisible_label(self):
+        for record in self:
+            record.invisible_label = 'Invisible' if record.invisible else 'Visible'
+
+    def action_toggle_invisible(self):
+        """Alterna el campo "invisible" (usado por los dos botones-insignia
+        VISIBLE/INVISIBLE del formulario de proyectos)."""
+        for record in self:
+            record.invisible = not record.invisible
+
+    # 0. Responsables adicionales (ademas del "Usuario responsable" / user_id).
+    # Cualquier usuario que aparezca aqui, o como user_id, puede ver y gestionar
+    # el proyecto (ver la regla de seguridad en security/security.xml).
+    responsible_user_ids = fields.Many2many(
+        'res.users',
+        'project_additional_responsible_rel',
+        'project_id',
+        'user_id',
+        string='Responsables adicionales',
+        help="Usuarios adicionales, aparte del Usuario responsable, que tambien pueden ver y gestionar este proyecto."
+    )
+
     # 1. Campo para contactos de referencia (Personas o empresas)
     reference_contact_ids = fields.Many2many(
         'res.partner',

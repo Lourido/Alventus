@@ -36,6 +36,15 @@ class ProjectImportIcsWizard(models.TransientModel):
             day_key = dt_start.date() if dt_start else fields.Date.today()
             events_by_day[day_key].append(ev)
 
+        # "etapa 1" = primer dia con eventos, "ultima etapa" = el ultimo. Se
+        # guardan en los campos estandar date_start/date (se ven solos en el
+        # Kanban y en la lista de proyectos).
+        if events_by_day:
+            project.write({
+                'date_start': min(events_by_day.keys()),
+                'date': max(events_by_day.keys()),
+            })
+
         Stage = self.env['project.task.type']
         Task = self.env['project.task']
         day_counter = 1

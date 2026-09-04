@@ -38,4 +38,16 @@
               parent="menu_project_main"
               action="action_project_import_ics_wizard"
               sequence="10"/>
+			  <!-- Oculta las raíces de la app "Project" de serie de Odoo
+     (project.menu_main_pm y project.menu_projects, esta última quedó
+     reparentada como raíz por error). Usamos nuestra propia app
+     "Viajes" (alf_proyecto_alventus.menu_project_main) en su lugar;
+     tener varias raíces con el mismo nombre genera duplicados
+     confusos en el selector de apps. -->
+	<record id="project.menu_main_pm" model="ir.ui.menu">
+		<field name="active">False</field>
+	</record>
+	<record id="project.menu_projects" model="ir.ui.menu">
+		<field name="active">False</field>
+	</record>
 </odoo>

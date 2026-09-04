@@ -33,7 +33,7 @@
         <record id="rule_project_gestor_read" model="ir.rule">
             <field name="name">Proyectos: lectura, solo los propios y visibles</field>
             <field name="model_id" ref="project.model_project_project"/>
-            <field name="domain_force">['|', ('user_id', '=', user.id), (1, '=', 1) if (user.has_group('base.group_system') or user.has_group('base.group_portal') or user.has_group('base.group_public')) else (0, '=', 1)]</field>
+            <field name="domain_force">['|', '&amp;', ('user_id', '=', user.id), ('invisible', '=', False), (1, '=', 1) if (user.has_group('base.group_system') or user.has_group('base.group_portal') or user.has_group('base.group_public')) else (0, '=', 1)]</field>
             <field name="groups" eval="[(5, 0, 0)]"/>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="False"/>

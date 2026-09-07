@@ -6,3 +6,5 @@ from . import project_import_ics_wizard
 from . import project_duplicate_wizard
 from . import res_users
 from . import project_route_file
+from . import project_photo
+from . import project_photo_upload_wizard

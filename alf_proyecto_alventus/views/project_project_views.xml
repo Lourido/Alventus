@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-        <!-- 1. Vista de lista (NO editable) para los Archivos de Ruta -->
+    <!-- 1. Vista de lista independiente para los Archivos de Ruta -->
     <record id="view_project_route_file_list" model="ir.ui.view">
         <field name="name">project.route.file.list</field>
         <field name="model">project.route.file</field>
@@ -14,21 +14,6 @@
         </field>
     </record>
 
-    <!-- 2. Vista de formulario emergente para crear/editar archivos de ruta -->
-    <record id="view_project_route_file_form" model="ir.ui.view">
-        <field name="name">project.route.file.form</field>
-        <field name="model">project.route.file</field>
-        <field name="arch" type="xml">
-            <form>
-                <group>
-                    <field name="file_data" filename="file_name" string="Archivo"/>
-                    <field name="file_name" readonly="1" string="Nombre del archivo"/>
-                    <field name="description" string="Descripción / Notas"/>
-                </group>
-            </form>
-        </field>
-    </record>
-	
     <!-- 2. Herencia del formulario del proyecto -->
     <record id="view_project_form_inherit_alf_v2" model="ir.ui.view">
         <field name="name">project.project.form.inherit.alf.v2</field>
@@ -37,12 +22,18 @@
         <field name="priority">99</field>
         <field name="arch" type="xml">
             
-            <!-- Botón Duplicar viaje -->
+            <!-- Botones en la cabecera del proyecto -->
             <xpath expr="//header" position="inside">
                 <button name="%(action_project_duplicate_wizard)d" 
                         type="action" 
                         string="Duplicar viaje" 
                         class="btn-secondary" 
+                        invisible="not id"/>
+                <button name="action_download_all_photos" 
+                        type="object" 
+                        string="Descargar todas las fotos (ZIP)" 
+                        class="btn-secondary" 
+                        icon="fa-download"
                         invisible="not id"/>
             </xpath>
 
@@ -50,26 +41,7 @@
             <xpath expr="//field[@name='name']" position="after">
                 <field name="user_id" string="Usuario responsable" widget="many2one_avatar_user"/>
                 <field name="start_date" string="Fecha de inicio" invisible="1"/>
-            </xpath>
-
-            <!-- Responsables adicionales: junto a "Gerente de proyecto" (mismo campo user_id,
-                 posicion estandar del formulario), para que se vea claramente con su etiqueta,
-                 en vez de ir apretado junto al titulo donde pasaba desapercibido.
-                 Nota: este campo ya NO da visibilidad por si solo (ver security.xml); es solo
-                 informativo, salvo el campo "invisible" de mas abajo que oculta el proyecto a
-                 todos salvo Administracion. -->
-            <xpath expr="//group//field[@name='user_id']" position="after">
-                <field name="responsible_user_ids" string="Responsables adicionales" widget="many2many_avatar_user"/>
-                <field name="invisible" invisible="1"/>
-                <label for="invisible" string="Visibilidad"/>
-                <div name="invisible_toggle">
-                    <button name="action_toggle_invisible" type="object"
-                            string="VISIBLE" class="badge rounded-pill text-bg-success border-0"
-                            invisible="invisible"/>
-                    <button name="action_toggle_invisible" type="object"
-                            string="INVISIBLE" class="badge rounded-pill text-bg-danger border-0"
-                            invisible="not invisible"/>
-                </div>
+                <field name="end_date" string="Fecha de fin" invisible="1"/>
             </xpath>
 
             <!-- Ocultar pestañas -->
@@ -92,7 +64,7 @@
                 </page>
             </xpath>
 
-            <!-- Pestaña Archivos de Ruta (con formulario emergente) -->
+            <!-- Pestaña Archivos de Ruta -->
             <xpath expr="//notebook" position="inside">
                 <page string="Archivos de Ruta" name="route_files">
                     <field name="route_file_ids">
@@ -110,52 +82,68 @@
                 </page>
             </xpath>
 
-        </field>
-    </record>
+            <!-- Pestaña Fotos del grupo/viaje -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Fotos del grupo/viaje" name="group_photos">
+                    <div class="mb-2 d-flex gap-2">
+                        <button name="%(action_project_photo_upload_wizard)d" 
+                                type="action" 
+                                string="Subir fotos" 
+                                class="btn-primary" 
+                                icon="fa-upload"
+                                context="{'default_project_id': id}"/>
+                        <button name="action_open_photos_to_download" 
+                                type="object" 
+                                string="Descargar fotos" 
+                                class="btn-secondary" 
+                                icon="fa-download"/>
+                    </div>
+                    <field name="photo_ids" readonly="1">
+                        <kanban create="false" delete="false" class="o_kanban_mobile">
+                            <field name="image"/>
+                            <field name="name"/>
+                            <field name="description"/>
+                            <templates>
+                                <t t-name="kanban-box">
+                                    <div class="oe_kanban_global_click o_kanban_record_has_image_fill">
+                                        <div class="o_kanban_image_fill_left d-none d-md-block" 
+                                             t-attf-style="background-image: url('#{kanban_image('project.photo', 'image', record.id.raw_value)}'); background-size: cover; background-position: center; min-height: 150px;">
+                                        </div>
+                                        <div class="oe_kanban_details">
+                                            <div class="o_kanban_record_top">
+                                                <div class="o_kanban_record_headings">
+                                                    <strong class="o_kanban_record_title">
+                                                        <field name="name"/>
+                                                    </strong>
+                                                </div>
+                                                <div class="o_kanban_record_top_right">
+                                                    <a name="action_download_photo" type="object" 
+                                                       class="btn btn-sm btn-primary" title="Descargar foto individual">
+                                                        <i class="fa fa-download"/> Descargar
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="o_kanban_record_body" t-if="record.description.raw_value">
+                                                <field name="description"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </templates>
+                        </kanban>
+                    </field>
+                    <div class="alert alert-info mt-2" role="alert">
+                        <strong>Galería de fotos:</strong> 
+                        <ul class="mb-0">
+                            <li>Pulsa <strong>"Subir fotos"</strong> para añadir nuevas fotos desde tu ordenador.</li>
+                            <li>Pulsa <strong>"Descargar fotos"</strong> para seleccionar varias fotos y descargarlas en un archivo ZIP.</li>
+                            <li>También puedes descargar fotos individuales pulsando el botón "Descargar" en cada una.</li>
+                        </ul>
+                        <br/>Estas fotos <u>NO se copiarán</u> al duplicar el viaje.
+                    </div>
+                </page>
+            </xpath>
 
-    <!-- 3. Kanban de viajes: mostrar el nombre del Gestor del proyecto como texto
-         (no solo el avatar). Las fechas de inicio/fin (etapa 1 / ultima etapa) ya
-         se muestran solas porque se guardan en los campos estandar date_start/date,
-         que la tarjeta de Kanban de "project" ya pinta de serie. -->
-    <record id="view_project_kanban_inherit_alf" model="ir.ui.view">
-        <field name="name">project.project.kanban.inherit.alf</field>
-        <field name="model">project.project</field>
-        <field name="inherit_id" ref="project.view_project_kanban"/>
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='last_update_color']" position="after">
-                <field name="invisible"/>
-                <field name="invisible_label"/>
-            </xpath>
-            <xpath expr="//field[@name='user_id'][@widget='many2one_avatar_user']" position="after">
-                <span t-if="record.user_id.value" t-out="record.user_id.value" class="ms-1 small text-truncate"/>
-                <span t-att-class="record.invisible.raw_value ? 'badge rounded-pill ms-1 text-bg-danger' : 'badge rounded-pill ms-1 text-bg-success'" t-out="record.invisible_label.value"/>
-            </xpath>
-        </field>
-    </record>
-
-    <!-- 4. Lista de viajes: la columna "Fecha planeada" (date_start/date) ya existe
-         en la vista estandar pero viene oculta por defecto (optional="hide"). La
-         dejamos visible sin que el usuario tenga que activarla a mano. -->
-    <record id="view_project_list_inherit_alf" model="ir.ui.view">
-        <field name="name">project.project.list.inherit.alf</field>
-        <field name="model">project.project</field>
-        <field name="inherit_id" ref="project.view_project"/>
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='date_start']" position="attributes">
-                <attribute name="optional">show</attribute>
-            </xpath>
-            <!-- Un boton por columna crearia DOS columnas (una siempre vacia), asi
-                 que aqui usamos una unica insignia de solo lectura (widget "badge",
-                 que no admite booleanos: por eso el texto viene del campo calculado
-                 invisible_label, pero el color se decide con el booleano real
-                 "invisible"). Para cambiar el valor, se abre el proyecto (el
-                 formulario si tiene los botones para marcar/desmarcar). -->
-            <xpath expr="//field[@name='user_id']" position="after">
-                <field name="invisible" column_invisible="1"/>
-                <field name="invisible_label" string="Visibilidad" optional="show"
-                       widget="badge"
-                       decoration-danger="invisible" decoration-success="not invisible"/>
-            </xpath>
         </field>
     </record>
 </odoo>

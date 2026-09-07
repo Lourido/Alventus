@@ -11,40 +11,9 @@ class ProjectProject(models.Model):
     _inherit = 'project.project'
 
     start_date = fields.Date(string='Fecha de inicio del viaje')
-
-    # -1. Oculto para todos (excepto Administracion). Se usa para "borrar" un
-    # viaje sin eliminarlo: mientras este marcado, nadie salvo Administracion
-    # puede verlo, ni siquiera el propio Gestor del proyecto.
-    invisible = fields.Boolean(string='Invisible', default=False)
-
-    # Solo para pintar la insignia VISIBLE/INVISIBLE en la lista de proyectos
-    # (el widget "badge" no admite campos booleanos, solo texto/seleccion).
-    invisible_label = fields.Char(string='Visibilidad', compute='_compute_invisible_label')
-
-    @api.depends('invisible')
-    def _compute_invisible_label(self):
-        for record in self:
-            record.invisible_label = 'Invisible' if record.invisible else 'Visible'
-
-    def action_toggle_invisible(self):
-        """Alterna el campo "invisible" (usado por los dos botones-insignia
-        VISIBLE/INVISIBLE del formulario de proyectos)."""
-        for record in self:
-            record.invisible = not record.invisible
-
-    # 0. Responsables adicionales (ademas del "Usuario responsable" / user_id).
-    # Cualquier usuario que aparezca aqui, o como user_id, puede ver y gestionar
-    # el proyecto (ver la regla de seguridad en security/security.xml).
-    responsible_user_ids = fields.Many2many(
-        'res.users',
-        'project_additional_responsible_rel',
-        'project_id',
-        'user_id',
-        string='Responsables adicionales',
-        help="Usuarios adicionales, aparte del Usuario responsable, que tambien pueden ver y gestionar este proyecto."
-    )
-
-    # 1. Campo para contactos de referencia (Personas o empresas)
+    end_date = fields.Date(string='Fecha de fin del viaje', compute='_compute_end_date', store=True)
+    
+    # 1. Campo para contactos de referencia
     reference_contact_ids = fields.Many2many(
         'res.partner',
         'project_reference_contact_rel',
@@ -60,6 +29,79 @@ class ProjectProject(models.Model):
         'project_id',
         string='Archivos de Ruta'
     )
+
+    # 3. Campo para fotos del grupo/viaje (NO se copia al duplicar)
+    photo_ids = fields.One2many(
+        'project.photo',
+        'project_id',
+        string='Fotos del grupo/viaje'
+    )
+
+    @api.depends('task_ids.fecha_hasta')
+    def _compute_end_date(self):
+        """Calcula la fecha de fin del proyecto como la fecha_hasta más tardía de sus tareas."""
+        for project in self:
+            tasks_with_end = project.task_ids.filtered(lambda t: t.fecha_hasta)
+            if tasks_with_end:
+                project.end_date = max(tasks_with_end.mapped('fecha_hasta')).date()
+            else:
+                project.end_date = False
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        """
+        Al crear un nuevo proyecto, crea automáticamente las tareas 
+        predefinidas en la etapa 'Antes de salir'.
+        """
+        # 1. Crear el proyecto normalmente
+        projects = super().create(vals_list)
+        
+        # 2. Para cada proyecto creado, añadir las tareas por defecto
+        for project in projects:
+            # Buscar la etapa "Antes de salir"
+            stage = self.env['project.task.type'].search([
+                ('name', '=', 'Antes de salir')
+            ], limit=1)
+            
+            if stage:
+                # Lista de tareas a crear
+                default_tasks = [
+                    "Pagar allí",
+                    "Visitas programadas/alternativas",
+                    "Rutas alternativas",
+                    "Guías locales",
+                    "Avisos generales",
+                    "Restaurantes/Bares/Zonas",
+                    "Precauciones próximo viaje",
+                    "A mejorar"
+                ]
+                
+                # Preparar los valores para creación en lote (más rápido)
+                tasks_to_create = []
+                for task_name in default_tasks:
+                    tasks_to_create.append({
+                        'name': task_name,
+                        'project_id': project.id,
+                        'stage_id': stage.id,
+                    })
+                
+                # Crear todas las tareas de una vez
+                if tasks_to_create:
+                    self.env['project.task'].create(tasks_to_create)
+            else:
+                # Opcional: Registrar en el log si no se encuentra la etapa
+                self.env['ir.logging'].create({
+                    'name': 'project.project',
+                    'type': 'server',
+                    'dbname': self.env.cr.dbname,
+                    'level': 'WARNING',
+                    'message': f"No se encontró la etapa 'Antes de salir' para crear tareas por defecto en el proyecto {project.name}.",
+                    'path': 'models/project_project.py',
+                    'func': 'create',
+                    'line': 70,
+                })
+        
+        return projects
 
     def copy(self, default=None):
         """
@@ -79,43 +121,48 @@ class ProjectProject(models.Model):
         
         # C. Copiar los archivos de ruta con sus descripciones
         for route_file in self.route_file_ids:
-            route_file.copy({'project_id': new_project.id})
+            route_file.copy({
+                'project_id': new_project.id,
+                'file_data': route_file.file_data,
+                'file_name': route_file.file_name,
+                'description': route_file.description,
+            })
         
         return new_project
 
     def action_export_tasks_to_ics(self):
         """
         Método existente para exportar las tareas a formato ICS.
-        ¡IMPORTANTE! Pega aquí tu código existente de exportación a ICS.
         """
         self.ensure_one()
-        
         # ---------------------------------------------------------------------
         # PEGA AQUÍ TU LÓGICA EXISTENTE DE EXPORTACIÓN A ICS
         # ---------------------------------------------------------------------
-        # Ejemplo:
-        # raise UserError(_("Funcionalidad de exportación ICS pendiente de restaurar."))
-        # Ejemplo de cómo podría verse (ajústalo a tu código real):
-        # 
-        # tasks = self.env['project.task'].search([('project_id', '=', self.id)])
-        # if not tasks:
-        #     raise UserError(_("No hay tareas para exportar."))
-        # 
-        # # ... tu lógica de generación del archivo ICS ...
-        # 
-        # attachment = self.env['ir.attachment'].create({
-        #     'name': f'{self.name}.ics',
-        #     'type': 'binary',
-        #     'datas': base64.b64encode(ics_content.encode('utf-8')),
-        #     'res_model': 'project.project',
-        #     'res_id': self.id,
-        # })
-        # 
-        # return {
-        #     'type': 'ir.actions.act_url',
-        #     'url': f'/web/content/{attachment.id}?download=true',
-        #     'target': 'new',
-        # }
-        # ---------------------------------------------------------------------
+        raise UserError(_("Funcionalidad de exportación ICS pendiente de restaurar en este método."))
+
+    def action_download_all_photos(self):
+        """
+        Descarga todas las fotos del viaje como un archivo ZIP.
+        """
+        self.ensure_one()
+        if not self.photo_ids:
+            raise UserError(_("Este viaje no tiene fotos para descargar."))
         
-        raise UserError(_("Por favor, restaura tu código de exportación ICS en este método."))
+        zip_name = f"Fotos_{self.name.replace(' ', '_')}_{fields.Date.today().strftime('%Y%m%d')}"
+        return self.photo_ids._create_zip_and_download(self.photo_ids, zip_name)
+
+    def action_open_photos_to_download(self):
+        """
+        Abre la vista de fotos del proyecto para permitir seleccionar 
+        y descargar varias fotos usando la acción de servidor.
+        """
+        self.ensure_one()
+        return {
+            'name': _('Seleccionar fotos para descargar'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'project.photo',
+            'view_mode': 'list,kanban',
+            'domain': [('project_id', '=', self.id)],
+            'context': {'default_project_id': self.id},
+            'target': 'current',
+        }

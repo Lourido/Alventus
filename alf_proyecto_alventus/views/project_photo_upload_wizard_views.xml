@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista del wizard para subir múltiples fotos -->
+    <record id="view_project_photo_upload_wizard_form" model="ir.ui.view">
+        <field name="name">project.photo.upload.wizard.form</field>
+        <field name="model">project.photo.upload.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Subir fotos al viaje">
+                <group>
+                    <field name="project_id" invisible="1"/>
+                    <!-- CORRECCIÓN: Usar attachment_ids con el widget many2many_binary -->
+                    <field name="attachment_ids" widget="many2many_binary" string="Seleccionar fotos"/>
+                </group>
+                <footer>
+                    <button name="action_upload_photos" type="object" 
+                            string="Subir fotos" class="btn-primary"/>
+                    <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Acción para abrir el wizard -->
+    <record id="action_project_photo_upload_wizard" model="ir.actions.act_window">
+        <field name="name">Subir fotos</field>
+        <field name="res_model">project.photo.upload.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_project_id': active_id}</field>
+    </record>
+</odoo>

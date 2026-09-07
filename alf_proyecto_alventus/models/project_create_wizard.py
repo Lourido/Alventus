@@ -12,17 +12,9 @@ class ProjectCreateWithTasksWizard(models.TransientModel):
     num_days = fields.Integer(string='Número de días', required=True, default=1)
 
     def action_create(self):
-        """
-        Crea un nuevo proyecto (viaje) con:
-        - Una etapa "Día 0 - Antes de salir" con fecha 7 días antes del inicio
-        - Una etapa por cada día del viaje empezando desde la fecha de inicio
-        """
         self.ensure_one()
-
+        
         # 1. Crear el proyecto (viaje)
-        # date_start / date son los campos estandar de Odoo (se muestran solos en
-        # el Kanban y en la lista de proyectos): "etapa 1" = fecha de inicio,
-        # "ultima etapa" = fecha de inicio + (numero de dias - 1).
         project = self.env['project.project'].create({
             'name': self.name,
             'user_id': self.env.uid,
@@ -30,16 +22,36 @@ class ProjectCreateWithTasksWizard(models.TransientModel):
             'date_start': self.start_date,
             'date': self.start_date + timedelta(days=self.num_days - 1),
         })
-
-        # 2. Crear la etapa "Día 0 - Antes de salir" (una semana antes del inicio)
-        day0_date = self.start_date - timedelta(days=7)
-        self.env['project.task.type'].create({
+        
+        # 2. Crear la etapa "Día 0 - Antes de salir"
+        stage_antes_salir = self.env['project.task.type'].create({
             'name': 'Día 0 - Antes de salir',
             'project_ids': [(4, project.id)],
             'sequence': 0,
         })
-
-        # 3. Crear una etapa por cada día del viaje
+        
+        # 3. CREAR LAS TAREAS PREDEFINIDAS EN LA ETAPA "Día 0 - Antes de salir"
+        default_tasks = [
+            "Pagar allí",
+            "Visitas programadas/alternativas",
+            "Rutas alternativas",
+            "Guías locales",
+            "Avisos generales",
+            "Restaurantes/Bares/Zonas",
+            "Precauciones próximo viaje",
+            "A mejorar"
+        ]
+        
+        # Preparar y crear las tareas en lote para el nuevo proyecto
+        tasks_to_create = [{
+            'name': task_name,
+            'project_id': project.id,
+            'stage_id': stage_antes_salir.id,
+        } for task_name in default_tasks]
+        
+        self.env['project.task'].create(tasks_to_create)
+        
+        # 4. Crear una etapa por cada día del viaje
         for day in range(1, self.num_days + 1):
             stage_date = self.start_date + timedelta(days=day - 1)
             self.env['project.task.type'].create({
@@ -47,8 +59,8 @@ class ProjectCreateWithTasksWizard(models.TransientModel):
                 'project_ids': [(4, project.id)],
                 'sequence': day,
             })
-
-        # 4. Devolver la acción para abrir el proyecto recién creado
+            
+        # 5. Devolver la acción para abrir el proyecto recién creado
         return {
             'type': 'ir.actions.act_window',
             'name': self.name,

@@ -9,11 +9,13 @@
         'security/security.xml',
         'security/ir.model.access.csv',
         'data/res_users.xml',
-        'views/project_task_views.xml',
-        'views/project_wizard_views.xml',
         'views/project_duplicate_wizard_views.xml',
+        'views/project_photo_upload_wizard_views.xml',  # 👈 AÑADE ESTA LÍNEA
         'views/project_project_views.xml',
-        'views/project_menu_views.xml',
+        'views/project_task_views.xml',
+        'views/project_wizard_views.xml',       
+        'views/project_menu_views.xml',        
+        'views/project_photo_views.xml',  # 👈 AÑADE ESTA LÍNEA
     ],
     'assets': {
         'web.assets_backend': [

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista Kanban (Galería de miniaturas) -->
+    <record id="view_project_photo_kanban" model="ir.ui.view">
+        <field name="name">project.photo.kanban</field>
+        <field name="model">project.photo</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile" sample="1">
+                <field name="image"/>
+                <field name="name"/>
+                <field name="description"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click o_kanban_record_has_image_fill">
+                            <div class="o_kanban_image_fill_left d-none d-md-block" 
+                                 t-attf-style="background-image: url('#{kanban_image('project.photo', 'image', record.id.raw_value)}'); background-size: cover; background-position: center; min-height: 150px;">
+                            </div>
+                            <div class="oe_kanban_details">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="name"/>
+                                        </strong>
+                                    </div>
+                                    <!-- Botón de descarga individual -->
+                                    <div class="o_kanban_record_top_right">
+                                        <a name="action_download_photo" type="object" 
+                                           class="btn btn-sm btn-primary" title="Descargar foto">
+                                            <i class="fa fa-download"/> Descargar
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_body" t-if="record.description.raw_value">
+                                    <field name="description"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Vista Formulario (para subir/editar fotos) -->
+    <record id="view_project_photo_form" model="ir.ui.view">
+        <field name="name">project.photo.form</field>
+        <field name="model">project.photo</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_download_photo" type="object" 
+                            string="Descargar foto" class="btn-primary" icon="fa-download"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="image" widget="image" class="oe_avatar" options="{'size': [300, 300]}"/>
+                            <field name="name" placeholder="Nombre de la foto"/>
+                        </group>
+                        <group>
+                            <field name="description" placeholder="Comentario o descripción de la foto..."/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vista Lista -->
+    <record id="view_project_photo_list" model="ir.ui.view">
+        <field name="name">project.photo.list</field>
+        <field name="model">project.photo</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="image" widget="image" string="Miniatura" options="{'size': [50, 50]}"/>
+                <field name="name" string="Nombre"/>
+                <field name="description" string="Descripción"/>
+                <field name="create_date" string="Fecha de subida"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Acción de servidor para descargar fotos seleccionadas -->
+    <record id="action_download_selected_photos" model="ir.actions.server">
+        <field name="name">Descargar fotos seleccionadas (ZIP)</field>
+        <field name="model_id" ref="model_project_photo"/>
+        <field name="binding_model_id" ref="model_project_photo"/>
+        <field name="binding_view_types">list,kanban</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_download_selected_photos()</field>
+    </record>
+</odoo>

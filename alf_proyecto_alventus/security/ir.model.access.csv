@@ -10,3 +10,7 @@ access_project_duplicate_wizard,project.duplicate.wizard,model_project_duplicate
 access_project_duplicate_wizard_gestor,project.duplicate.wizard.gestor,model_project_duplicate_wizard,alf_proyecto_alventus.group_gestor_viajes,1,1,1,1
 access_project_route_file_user,project.route.file.user,model_project_route_file,base.group_user,1,1,1,1
 access_project_route_file_admin,project.route.file.admin,model_project_route_file,base.group_system,1,1,1,1
+access_project_photo_user,project.photo.user,model_project_photo,base.group_user,1,1,1,1
+access_project_photo_admin,project.photo.admin,model_project_photo,base.group_system,1,1,1,1
+access_project_photo_upload_wizard_user,project.photo.upload.wizard.user,model_project_photo_upload_wizard,base.group_user,1,1,1,1
+access_project_photo_upload_wizard_admin,project.photo.upload.wizard.admin,model_project_photo_upload_wizard,base.group_system,1,1,1,1

@@ -1,0 +1,9 @@
+# Caché compilada de Python (Odoo la regenera solo, no debe subirse)
+__pycache__/
+*.pyc
+*.pyo
+
+# Archivos de Python compilados en cualquier subcarpeta
+**/__pycache__/
+**/*.pyc
+"@ | Out-File -FilePath .gitignore -Encoding utf8

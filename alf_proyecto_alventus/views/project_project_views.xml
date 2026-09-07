@@ -117,10 +117,10 @@
                                                     </strong>
                                                 </div>
                                                 <div class="o_kanban_record_top_right">
-                                                    <a name="action_download_photo" type="object" 
+                                                    <button name="action_download_photo" type="object" 
                                                        class="btn btn-sm btn-primary" title="Descargar foto individual">
                                                         <i class="fa fa-download"/> Descargar
-                                                    </a>
+                                                    </button>
                                                 </div>
                                             </div>
                                             <div class="o_kanban_record_body" t-if="record.description.raw_value">

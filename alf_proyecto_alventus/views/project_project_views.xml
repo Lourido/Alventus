@@ -201,7 +201,7 @@
                         <!-- Gerente -->
                         <div class="d-flex justify-content-between align-items-center mb-1">
                             <span class="text-muted">
-                                <i class="fa fa-user me-1"/>Gerente:
+                                <i class="fa fa-user me-1" role="img" aria-label="Gerente" title="Gerente"/>Gerente:
                             </span>
                             <strong class="text-truncate ms-2" style="max-width: 60%;">
                                 <field name="user_id" nolabel="1" options="{'no_open': True}"/>
@@ -210,7 +210,7 @@
                         <!-- Visibilidad -->
                         <div class="d-flex justify-content-between align-items-center mb-1">
                             <span class="text-muted">
-                                <i class="fa fa-eye me-1"/>Visibilidad:
+                                <i class="fa fa-eye me-1" role="img" aria-label="Visibilidad" title="Visibilidad"/>Visibilidad:
                             </span>
                             <span class="badge rounded-pill text-bg-danger border-0" 
                                   t-if="record.invisible.raw_value">
@@ -223,14 +223,14 @@
                         </div>
                         <!-- Tareas (IZQUIERDA) + Días (DERECHA) -->
                         <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-muted">
-                                <i class="fa fa-tasks me-1"/>
-                                <field name="task_count" nolabel="1"/> tarea(s)
-                            </span>
-                            <span class="text-muted">
-                                <i class="fa fa-calendar-o me-1"/>
-                                <field name="trip_days" nolabel="1"/> día(s)
-                            </span>
+							<span class="text-muted">
+								<i class="fa fa-tasks me-1" role="img" aria-label="Tareas" title="Tareas"/>
+								<field name="task_count" nolabel="1"/> tarea(s)
+							</span>
+							<span class="text-muted">
+								<i class="fa fa-calendar-o me-1" role="img" aria-label="Días" title="Días"/>
+								<field name="trip_days" nolabel="1"/> día(s)
+							</span>
                         </div>
                     </div>
                 </t>

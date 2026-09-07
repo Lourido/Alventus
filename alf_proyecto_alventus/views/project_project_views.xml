@@ -104,7 +104,7 @@
                             <field name="name"/>
                             <field name="description"/>
                             <templates>
-                                <t t-name="kanban-box">
+                                <t t-name="card">
                                     <div class="oe_kanban_global_click o_kanban_record_has_image_fill">
                                         <div class="o_kanban_image_fill_left d-none d-md-block" 
                                              t-attf-style="background-image: url('#{kanban_image('project.photo', 'image', record.id.raw_value)}'); background-size: cover; background-position: center; min-height: 150px;">

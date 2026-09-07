@@ -10,7 +10,7 @@
                 <field name="name"/>
                 <field name="description"/>
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div class="oe_kanban_global_click o_kanban_record_has_image_fill">
                             <div class="o_kanban_image_fill_left d-none d-md-block" 
                                  t-attf-style="background-image: url('#{kanban_image('project.photo', 'image', record.id.raw_value)}'); background-size: cover; background-position: center; min-height: 150px;">
@@ -22,12 +22,11 @@
                                             <field name="name"/>
                                         </strong>
                                     </div>
-                                    <!-- Botón de descarga individual -->
                                     <div class="o_kanban_record_top_right">
-                                        <a name="action_download_photo" type="object" 
-                                           class="btn btn-sm btn-primary" title="Descargar foto">
+                                        <button name="action_download_photo" type="object" 
+                                                class="btn btn-sm btn-primary" title="Descargar foto">
                                             <i class="fa fa-download"/> Descargar
-                                        </a>
+                                        </button>
                                     </div>
                                 </div>
                                 <div class="o_kanban_record_body" t-if="record.description.raw_value">

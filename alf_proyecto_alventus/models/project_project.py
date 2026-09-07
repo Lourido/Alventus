@@ -12,7 +12,24 @@ class ProjectProject(models.Model):
 
     start_date = fields.Date(string='Fecha de inicio del viaje')
     end_date = fields.Date(string='Fecha de fin del viaje', compute='_compute_end_date', store=True)
-    
+
+    # 4. Visibilidad del viaje (para filtrar tareas/etapas en reglas de seguridad)
+    invisible = fields.Boolean(
+        string='Invisible',
+        default=False,
+        help="Si está marcado, las tareas y etapas de este viaje serán invisibles para otros usuarios (excepto administración)."
+    )
+
+    # 5. Responsables adicionales del viaje
+    responsible_user_ids = fields.Many2many(
+        'res.users',
+        'project_responsible_user_rel',
+        'project_id',
+        'user_id',
+        string='Responsables adicionales',
+        help="Usuarios adicionales que pueden gestionar este viaje además del responsable principal."
+    )
+
     # 1. Campo para contactos de referencia
     reference_contact_ids = fields.Many2many(
         'res.partner',
@@ -36,6 +53,38 @@ class ProjectProject(models.Model):
         'project_id',
         string='Fotos del grupo/viaje'
     )
+    
+        # 4. Número de días del viaje (etapas desde la etapa 1, excluyendo "Antes de salir")
+    trip_days = fields.Integer(
+        string='Días del viaje',
+        compute='_compute_trip_days',
+        help="Número de etapas del viaje desde la etapa 1. La etapa 0 'Antes de salir' no cuenta."
+    )
+
+    def _compute_trip_days(self):
+        """
+        Calcula el número de días del viaje.
+        - Si el viaje tiene etapa 0 ('Día 0 - Antes de salir'), el número de días
+          es el número total de etapas menos 1.
+        - Si el viaje NO tiene etapa 0, el número de días es el número total de etapas.
+        """
+        for project in self:
+            # Buscar las etapas de este proyecto en el modelo project.task.type
+            stages = self.env['project.task.type'].search([
+                ('project_ids', 'in', project.id)
+            ])
+            total_stages = len(stages)
+            
+            # Detectar si existe la etapa 0 buscando por nombre
+            has_stage_zero = any(
+                'Día 0' in (stage.name or '') or 'Antes de salir' in (stage.name or '')
+                for stage in stages
+            )
+            
+            if has_stage_zero:
+                project.trip_days = total_stages - 1
+            else:
+                project.trip_days = total_stages
 
     @api.depends('task_ids.fecha_hasta')
     def _compute_end_date(self):
@@ -46,6 +95,12 @@ class ProjectProject(models.Model):
                 project.end_date = max(tasks_with_end.mapped('fecha_hasta')).date()
             else:
                 project.end_date = False
+
+    def action_toggle_invisible(self):
+        """Alterna el valor del campo invisible (VISIBLE <-> INVISIBLE)."""
+        self.ensure_one()
+        self.write({'invisible': not self.invisible})
+        return True
 
     @api.model_create_multi
     def create(self, vals_list):

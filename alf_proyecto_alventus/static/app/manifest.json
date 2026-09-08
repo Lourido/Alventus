@@ -1,11 +1,11 @@
 {
-    "name": "alventus_app",
-    "short_name": "alventus_app",
-    "start_url": ".",
+    "name": "Alventus",
+    "short_name": "Alventus",
+    "start_url": "index.html",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Alventus, organiza tus viajes.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

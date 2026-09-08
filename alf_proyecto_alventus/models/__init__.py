@@ -8,3 +8,4 @@ from . import res_users
 from . import project_route_file
 from . import project_photo
 from . import project_photo_upload_wizard
+from . import project_task_type

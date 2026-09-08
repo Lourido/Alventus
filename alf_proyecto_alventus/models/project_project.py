@@ -60,6 +60,26 @@ class ProjectProject(models.Model):
         compute='_compute_trip_days',
         help="Número de etapas del viaje desde la etapa 1. La etapa 0 'Antes de salir' no cuenta."
     )
+    
+        # 5. Etapas del viaje (solo lectura, para mostrarlas en una pestaña del formulario)
+    stage_ids = fields.Many2many(
+        'project.task.type',
+        compute='_compute_stage_ids',
+        string='Etapas del viaje'
+    )
+
+    @api.depends('task_ids.stage_id', 'task_ids.project_id')
+    def _compute_stage_ids(self):
+        """Devuelve las etapas asignadas a este viaje, ordenadas por secuencia."""
+        Stage = self.env['project.task.type']
+        for project in self:
+            if project.id:
+                stages = Stage.search([
+                    ('project_ids', 'in', project.id)
+                ], order='sequence asc, id asc')
+                project.stage_ids = stages
+            else:
+                project.stage_ids = Stage
 
     def _compute_trip_days(self):
         """
@@ -84,7 +104,7 @@ class ProjectProject(models.Model):
             if has_stage_zero:
                 project.trip_days = total_stages - 1
             else:
-                project.trip_days = total_stages
+                project.trip_days = total_stages    
 
     @api.depends('task_ids.fecha_hasta')
     def _compute_end_date(self):

@@ -17,3 +17,6 @@ access_project_photo_upload_wizard_admin,project.photo.upload.wizard.admin,model
 access_project_project_user_alf,project.project.user.alf,project.model_project_project,base.group_user,1,1,1,0
 access_project_task_user_alf,project.task.user.alf,project.model_project_task,base.group_user,1,1,1,0
 access_project_stage_user_alf,project.stage.user.alf,project.model_project_task_type,base.group_user,1,1,1,1
+access_project_stage_gestor_full,project.stage.gestor.full,project.model_project_task_type,alf_proyecto_alventus.group_gestor_viajes,1,1,1,1
+access_attachment_gestor_read,ir.attachment.gestor.read,base.model_ir_attachment,alf_proyecto_alventus.group_gestor_viajes,1,0,0,0
+access_attachment_gestor_write,ir.attachment.gestor.write,base.model_ir_attachment,alf_proyecto_alventus.group_gestor_viajes,0,1,1,1

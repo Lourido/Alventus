@@ -95,66 +95,75 @@
 
             <!-- Pestaña Fotos del grupo/viaje -->
             <xpath expr="//notebook" position="inside">
-                <page string="Fotos del grupo/viaje" name="group_photos">
-                    <div class="mb-2 d-flex gap-2">
-                        <button name="%(action_project_photo_upload_wizard)d" 
-                                type="action" 
-                                string="Subir fotos" 
-                                class="btn-primary" 
-                                icon="fa-upload"
-                                context="{'default_project_id': id}"/>
-                        <button name="action_open_photos_to_download" 
-                                type="object" 
-                                string="Descargar fotos" 
-                                class="btn-secondary" 
-                                icon="fa-download"/>
-                    </div>
-                    <field name="photo_ids" readonly="1">
-                        <kanban create="false" delete="false" class="o_kanban_mobile">
-                            <field name="image"/>
-                            <field name="name"/>
-                            <field name="description"/>
-                            <templates>
-                                <t t-name="card">
-                                    <div class="oe_kanban_global_click o_kanban_record_has_image_fill">
-                                        <div class="o_kanban_image_fill_left d-none d-md-block" 
-                                             t-attf-style="background-image: url('#{kanban_image('project.photo', 'image', record.id.raw_value)}'); background-size: cover; background-position: center; min-height: 150px;">
-                                        </div>
-                                        <div class="oe_kanban_details">
-                                            <div class="o_kanban_record_top">
-                                                <div class="o_kanban_record_headings">
-                                                    <strong class="o_kanban_record_title">
-                                                        <field name="name"/>
-                                                    </strong>
-                                                </div>
-                                                <div class="o_kanban_record_top_right">
-                                                    <button name="action_download_photo" type="object" 
-                                                       class="btn btn-sm btn-primary" title="Descargar foto individual">
-                                                        <i class="fa fa-download"/> Descargar
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <div class="o_kanban_record_body" t-if="record.description.raw_value">
-                                                <field name="description"/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </t>
-                            </templates>
-                        </kanban>
+            <!-- Pestaña Fotos del grupo/viaje -->
+				<page string="Fotos del grupo/viaje" name="group_photos">
+					<button name="action_open_photos_to_download" type="object" 
+							string="Descargar todas las fotos" 
+							class="btn-primary mb-3" 
+							icon="fa-download"/>
+					
+					<field name="photo_ids" widget="many2many" options="{'not_delete': True}">
+						<kanban class="o_kanban_mobile" create="false" edit="false" delete="false">
+							<field name="image"/>
+							<field name="name"/>
+							<field name="description"/>
+							<templates>
+								<t t-name="card">
+									<div class="oe_kanban_global_click">
+										<div class="o_kanban_image me-3">
+											<img t-att-src="record.image.raw_value ? 'data:image/png;base64,' + record.image.raw_value : '/web/static/img/placeholder.png'" 
+												 alt="Foto" 
+												 class="o_image_64_cover"/>
+										</div>
+										<div class="oe_kanban_details">
+											<strong class="o_kanban_record_title">
+												<field name="name"/>
+											</strong>
+											<div class="o_kanban_record_body">
+												<field name="description"/>
+											</div>
+											<div class="o_kanban_record_bottom">
+												<div class="oe_kanban_bottom_left">
+													<button name="action_download_photo" type="object" 
+															class="btn btn-sm btn-primary" icon="fa-download">
+														Descargar
+													</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</t>
+							</templates>
+						</kanban>
+					</field>
+				</page>
+            </xpath>
+            <!-- Pestaña Etapas del viaje (con acceso a los archivos de cada etapa) -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Etapas del viaje" name="trip_stages">
+                    <field name="stage_ids" readonly="1">
+                        <list create="false" edit="false" delete="false">
+                            <field name="sequence" string="Orden" widget="handle"/>
+                            <field name="name" string="Etapa"/>
+                            <field name="attachment_count" string="📎 Archivos"/>
+                            <field name="fold" string="Plegada"/>
+                            <button name="action_open_stage_form" type="object"
+                                    string="Ver etapa / Archivos"
+                                    class="btn-primary btn-sm"
+                                    icon="fa-folder-open"/>
+							<button name="action_add_attachment" type="object"
+                                    string="Subir archivo"
+                                    class="btn-secondary btn-sm"
+                                    icon="fa-upload"/>
+                        </list>
                     </field>
                     <div class="alert alert-info mt-2" role="alert">
-                        <strong>Galería de fotos:</strong> 
-                        <ul class="mb-0">
-                            <li>Pulsa <strong>"Subir fotos"</strong> para añadir nuevas fotos desde tu ordenador.</li>
-                            <li>Pulsa <strong>"Descargar fotos"</strong> para seleccionar varias fotos y descargarlas en un archivo ZIP.</li>
-                            <li>También puedes descargar fotos individuales pulsando el botón "Descargar" en cada una.</li>
-                        </ul>
-                        <br/>Estas fotos <u>NO se copiarán</u> al duplicar el viaje.
+                        <i class="fa fa-info-circle me-1" role="img" aria-label="Info" title="Información"/>
+                        <strong>Instrucciones:</strong> Pulsa <em>"Ver etapa / Archivos"</em> en cualquier fila 
+                        para abrir el formulario de la etapa y acceder a sus archivos adjuntos.
                     </div>
                 </page>
             </xpath>
-
         </field>
     </record>
 	

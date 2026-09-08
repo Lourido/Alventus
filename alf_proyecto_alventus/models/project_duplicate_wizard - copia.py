@@ -94,36 +94,6 @@ class ProjectDuplicateWizard(models.TransientModel):
             stage_mapping[old_stage.id] = new_stage
         _logger.info("[PERF] Paso 3 (Crear Etapas): %.4fs", time.time() - step3_start)
 
-        # 3b. Copiar adjuntos de las ETAPAS en BULK (mismo patrón que los
-        # adjuntos de tarea del paso 8-9)
-        step3b_start = time.time()
-        old_stage_ids = list(stage_mapping.keys())
-        if old_stage_ids:
-            stage_attachments_data = self.env['ir.attachment'].search_read(
-                [('res_model', '=', 'project.task.type'), ('res_id', 'in', old_stage_ids)],
-                ['id', 'name', 'datas', 'mimetype', 'description', 'res_id']
-            )
-            if stage_attachments_data:
-                stage_att_vals_list = []
-                for att_data in stage_attachments_data:
-                    new_stage = stage_mapping.get(att_data['res_id'])
-                    if new_stage:
-                        stage_att_vals_list.append({
-                            'name': att_data['name'],
-                            'datas': att_data['datas'],
-                            'res_model': 'project.task.type',
-                            'res_id': new_stage.id,
-                            'mimetype': att_data['mimetype'],
-                            'description': att_data['description'],
-                        })
-
-                if stage_att_vals_list:
-                    self.env['ir.attachment'].with_context(
-                        tracking_disable=True,
-                        mail_create_nolog=True,
-                    ).create(stage_att_vals_list)
-        _logger.info("[PERF] Paso 3b (Copiar adjuntos de etapa): %.4fs", time.time() - step3b_start)
-
         # 4. Leer datos de tareas (OPTIMIZACION CLAVE: 1 sola consulta SQL)
         step4_start = time.time()
         original_tasks_data = self.env['project.task'].search_read(

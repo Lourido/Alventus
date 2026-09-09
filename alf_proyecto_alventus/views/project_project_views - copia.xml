@@ -138,57 +138,32 @@
 					</field>
 				</page>
             </xpath>
-			
-            <!-- Pestaña Etapas del viaje: nombre + descripción debajo + archivos -->
+            <!-- Pestaña Etapas del viaje (con acceso a los archivos de cada etapa) -->
             <xpath expr="//notebook" position="inside">
                 <page string="Etapas del viaje" name="trip_stages">
                     <field name="stage_ids" readonly="1">
-                        <kanban create="false" edit="false" delete="false" class="o_kanban_mobile">
-                            <field name="name"/>
-                            <field name="description"/>
-                            <field name="attachment_count"/>
-                            <templates>
-                                <t t-name="card">
-                                    <div class="p-2">
-                                        <div class="d-flex justify-content-between align-items-start">
-                                            <strong class="o_kanban_record_title">
-                                                <field name="name"/>
-                                            </strong>
-                                            <span class="badge text-bg-secondary ms-2">
-                                                <i class="fa fa-paperclip me-1" role="img" aria-label="Archivos" title="Archivos"/>
-                                                <field name="attachment_count" nolabel="1"/>
-                                            </span>
-                                        </div>
-                                        <!-- DESCRIPCION DEBAJO DEL NOMBRE -->
-                                        <div t-if="record.description.raw_value"
-                                             class="text-muted mt-1"
-                                             style="white-space: pre-line;">
-                                            <field name="description"/>
-                                        </div>
-                                        <div class="mt-2 d-flex gap-2">
-                                            <button name="action_open_stage_form" type="object"
-                                                    string="Ver etapa / Archivos"
-                                                    class="btn btn-sm btn-primary"
-                                                    icon="fa-folder-open"/>
-                                            <button name="action_add_attachment" type="object"
-                                                    string="Subir archivo"
-                                                    class="btn btn-sm btn-secondary"
-                                                    icon="fa-upload"/>
-                                        </div>
-                                    </div>
-                                </t>
-                            </templates>
-                        </kanban>
+                        <list create="false" edit="false" delete="false">
+                            <field name="sequence" string="Orden" widget="handle"/>
+                            <field name="name" string="Etapa"/>
+                            <field name="attachment_count" string="📎 Archivos"/>
+                            <field name="fold" string="Plegada"/>
+                            <button name="action_open_stage_form" type="object"
+                                    string="Ver etapa / Archivos"
+                                    class="btn-primary btn-sm"
+                                    icon="fa-folder-open"/>
+							<button name="action_add_attachment" type="object"
+                                    string="Subir archivo"
+                                    class="btn-secondary btn-sm"
+                                    icon="fa-upload"/>
+                        </list>
                     </field>
                     <div class="alert alert-info mt-2" role="alert">
                         <i class="fa fa-info-circle me-1" role="img" aria-label="Info" title="Información"/>
-                        <strong>Instrucciones:</strong> cada tarjeta muestra el <em>nombre</em> de la etapa y,
-                        debajo, su <em>descripción</em>. La descripción se edita pulsando
-                        <em>"Ver etapa / Archivos"</em>. Los botones de cada tarjeta permiten ver o subir archivos.
+                        <strong>Instrucciones:</strong> Pulsa <em>"Ver etapa / Archivos"</em> en cualquier fila 
+                        para abrir el formulario de la etapa y acceder a sus archivos adjuntos.
                     </div>
                 </page>
             </xpath>
-			
         </field>
     </record>
 	

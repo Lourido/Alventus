@@ -18,6 +18,13 @@ class ProjectTaskType(models.Model):
         compute='_compute_attachment_ids',
         string='Tiene adjuntos'
     )
+    
+        # Descripción libre de la etapa (visible debajo del nombre en el viaje)
+    description = fields.Char(
+        string='Descripción',
+        help='Texto descriptivo de la etapa. Se muestra debajo del nombre al ver '
+             'las etapas del viaje y se copia siempre al duplicar el viaje.'
+    )
 
     @api.depends_context('uid')
     def _compute_attachment_ids(self):

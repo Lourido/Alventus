@@ -115,6 +115,31 @@ class ProjectProject(models.Model):
                 project.end_date = max(tasks_with_end.mapped('fecha_hasta')).date()
             else:
                 project.end_date = False
+    
+    def _create_para_manana_tasks(self):
+        """
+        Crea una tarea llamada 'Para mañana' en cada etapa del proyecto
+        que todavía no la tenga.
+        """
+        Task = self.env['project.task']
+        Stage = self.env['project.task.type']
+        for project in self:
+            stages = Stage.search(
+                [('project_ids', 'in', project.id)],
+                order='sequence asc, id asc'
+            )
+            for stage in stages:
+                already = Task.search_count([
+                    ('project_id', '=', project.id),
+                    ('stage_id', '=', stage.id),
+                    ('name', '=', 'Para mañana'),
+                ])
+                if not already:
+                    Task.create({
+                        'name': 'Para mañana',
+                        'project_id': project.id,
+                        'stage_id': stage.id,
+                    })    
 
     def action_toggle_invisible(self):
         """Alterna el valor del campo invisible (VISIBLE <-> INVISIBLE)."""
@@ -175,6 +200,8 @@ class ProjectProject(models.Model):
                     'func': 'create',
                     'line': 70,
                 })
+            # Crear la tarea "Para mañana" en cada etapa (si ya existen etapas)
+            projects._create_para_manana_tasks()
         
         return projects
 
@@ -202,6 +229,14 @@ class ProjectProject(models.Model):
                 'file_name': route_file.file_name,
                 'description': route_file.description,
             })
+                # D. Copiar las etapas (CON su descripción) si el nuevo proyecto se quedó sin ellas
+        new_stages = self.env['project.task.type'].search([('project_ids', 'in', new_project.id)])
+        if not new_stages:
+            old_stages = self.env['project.task.type'].search([
+                ('project_ids', 'in', self.id)
+            ], order='sequence asc, id asc')
+            for stage in old_stages:
+                stage.copy({'project_ids': [(6, 0, [new_project.id])]})
         
         return new_project
 

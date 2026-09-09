@@ -60,6 +60,9 @@ class ProjectCreateWithTasksWizard(models.TransientModel):
                 'sequence': day,
             })
             
+        # 4b. Crear una tarea "Para mañana" en cada etapa del viaje nuevo
+        project._create_para_manana_tasks()
+            
         # 5. Devolver la acción para abrir el proyecto recién creado
         return {
             'type': 'ir.actions.act_window',

@@ -18,8 +18,6 @@
                     <group>
                         <group>
                             <field name="name"/>
-                            <field name="description" string="Descripción"
-                                   placeholder="Descripción de la etapa..."/>
                             <field name="sequence"/>
                             <field name="fold"/>
                         </group>
@@ -30,14 +28,19 @@
                     </group>
                     <notebook>
                         <page string="Archivos de la etapa" name="stage_attachments">
+                            <!-- Botón FUERA del field readonly -->
                             <div class="mb-3">
                                 <button name="action_add_attachment" type="object"
-                                        string="Añadir archivo" class="btn-primary" icon="fa-upload"/>
+                                        string="📤 Añadir archivo" 
+                                        class="btn-primary" 
+                                        icon="fa-upload"/>
                                 <span class="ms-3 text-muted">
                                     <i class="fa fa-info-circle me-1" role="img" aria-label="Info" title="Información"/>
                                     Los archivos se copiarán automáticamente al duplicar el viaje.
                                 </span>
                             </div>
+                            
+                            <!-- Lista de archivos (solo lectura) -->
                             <field name="attachment_ids" readonly="1">
                                 <list create="false" edit="false" delete="true">
                                     <field name="name" string="Nombre"/>
@@ -62,7 +65,6 @@
             <list>
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
-                <field name="description"/>
                 <field name="project_ids" widget="many2many_tags"/>
                 <field name="attachment_count" string="Archivos"/>
                 <field name="fold"/>

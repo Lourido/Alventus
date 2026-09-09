@@ -90,6 +90,7 @@ class ProjectDuplicateWizard(models.TransientModel):
                 'name': new_stage_name,
                 'project_ids': [(4, new_project.id)],
                 'sequence': old_stage.sequence,
+                'description': old_stage.description,   # 👈 NUEVO: copiar descripción
             })
             stage_mapping[old_stage.id] = new_stage
         _logger.info("[PERF] Paso 3 (Crear Etapas): %.4fs", time.time() - step3_start)

@@ -43,6 +43,19 @@
         </field>
     </record>
 
+    <record id="view_alventus_app_message_search" model="ir.ui.view">
+        <field name="name">alventus.app.message.search</field>
+        <field name="model">alventus.app.message</field>
+        <field name="arch" type="xml">
+            <search string="Mensajes de la app">
+                <field name="name" string="Buscar por dónde sale o por el texto"
+                       filter_domain="['|', '|', ('name', 'ilike', self), ('default_text', 'ilike', self), ('text', 'ilike', self)]"/>
+                <filter name="personalizados" string="Cambiados por mí" domain="[('text', '!=', False)]"/>
+                <filter name="sin_personalizar" string="Con el texto original" domain="[('text', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
     <record id="action_alventus_app_message" model="ir.actions.act_window">
         <field name="name">Mensajes de la app</field>
         <field name="res_model">alventus.app.message</field>

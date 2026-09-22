@@ -1,34 +1,591 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Fichas de los mensajes que la app permite personalizar. El CÓDIGO
-         tiene que coincidir con el de lib/utils/app_messages.dart.
+    <!-- Fichas de TODOS los mensajes de aviso y error que enseña la app.
+         El CÓDIGO tiene que coincidir con el de lib/utils/app_messages.dart.
          "text" (el mensaje personalizado) NO se pone aquí a propósito: así
          al actualizar el módulo nunca se pisa lo que haya escrito el
-         usuario. -->
+         usuario.
+         Los mensajes con un hueco entre llaves ({detalle}) lo rellena la
+         app con el motivo concreto; si se quita el hueco del texto, el
+         mensaje sale sin ese detalle. -->
     <data noupdate="0">
-        <record id="app_message_sin_cobertura" model="alventus.app.message">
-            <field name="code">sin_cobertura</field>
-            <field name="name">Sin cobertura: algo que solo se puede hacer con conexión</field>
-            <field name="default_text">Lo siento. Tendrás que esperar a que tengas cobertura para hacerlo.</field>
+        <record id="app_message_el_servidor_no_ha_podido_mandar_el" model="alventus.app.message">
+            <field name="code">el_servidor_no_ha_podido_mandar_el</field>
+            <field name="name">Avisos en el teléfono: El servidor no ha podido mandar el aviso{detalle}.</field>
+            <field name="default_text">El servidor no ha podido mandar el aviso{detalle}.</field>
             <field name="sequence">10</field>
         </record>
-        <record id="app_message_guardado_en_telefono" model="alventus.app.message">
-            <field name="code">guardado_en_telefono</field>
-            <field name="name">Sin cobertura: el cambio se ha guardado en el teléfono</field>
-            <field name="default_text">Cambios guardados en el teléfono. Cuando haya conexión se subirán al servidor.</field>
+        <record id="app_message_en_el_iphone_los_avisos_solo_funcionan" model="alventus.app.message">
+            <field name="code">en_el_iphone_los_avisos_solo_funcionan</field>
+            <field name="name">Avisos en el teléfono: En el iPhone, los avisos solo funcionan con la app añadida a la pantal</field>
+            <field name="default_text">En el iPhone, los avisos solo funcionan con la app añadida a la pantalla de inicio: en Safari, pulsa Compartir y luego &quot;Añadir a pantalla de inicio&quot;, y abre la app desde ese icono.</field>
             <field name="sequence">20</field>
         </record>
-        <record id="app_message_viendo_datos_guardados" model="alventus.app.message">
-            <field name="code">viendo_datos_guardados</field>
-            <field name="name">Sin cobertura: se están viendo los datos guardados</field>
-            <field name="default_text">NO hay conexión. Estás viendo los datos guardados en el teléfono la última vez que usaste la app con conexión.</field>
+        <record id="app_message_este_navegador_no_puede_recibir_avisos" model="alventus.app.message">
+            <field name="code">este_navegador_no_puede_recibir_avisos</field>
+            <field name="name">Avisos en el teléfono: Este navegador no puede recibir avisos.</field>
+            <field name="default_text">Este navegador no puede recibir avisos.</field>
             <field name="sequence">30</field>
+        </record>
+        <record id="app_message_has_bloqueado_los_avisos_para_recibirlos_permitelo" model="alventus.app.message">
+            <field name="code">has_bloqueado_los_avisos_para_recibirlos_permitelo</field>
+            <field name="name">Avisos en el teléfono: Has bloqueado los avisos. Para recibirlos, permítelos para Alventus en</field>
+            <field name="default_text">Has bloqueado los avisos. Para recibirlos, permítelos para Alventus en los ajustes del teléfono.</field>
+            <field name="sequence">40</field>
+        </record>
+        <record id="app_message_los_avisos_no_estan_activados_en_este" model="alventus.app.message">
+            <field name="code">los_avisos_no_estan_activados_en_este</field>
+            <field name="name">Avisos en el teléfono: Los avisos no están activados en este teléfono.</field>
+            <field name="default_text">Los avisos no están activados en este teléfono.</field>
+            <field name="sequence">50</field>
+        </record>
+        <record id="app_message_no_se_han_activado_los_avisos" model="alventus.app.message">
+            <field name="code">no_se_han_activado_los_avisos</field>
+            <field name="name">Avisos en el teléfono: No se han activado los avisos.</field>
+            <field name="default_text">No se han activado los avisos.</field>
+            <field name="sequence">60</field>
+        </record>
+        <record id="app_message_no_se_han_podido_activar_los_avisos" model="alventus.app.message">
+            <field name="code">no_se_han_podido_activar_los_avisos</field>
+            <field name="name">Avisos en el teléfono: No se han podido activar los avisos: {detalle}</field>
+            <field name="default_text">No se han podido activar los avisos: {detalle}</field>
+            <field name="sequence">70</field>
+        </record>
+        <record id="app_message_el_viaje_se_copio_pero_no_se" model="alventus.app.message">
+            <field name="code">el_viaje_se_copio_pero_no_se</field>
+            <field name="name">Compartir un viaje: El viaje se copió, pero no se pudo asignar el guía como gestor</field>
+            <field name="default_text">El viaje se copió, pero no se pudo asignar el guía como gestor</field>
+            <field name="sequence">80</field>
+        </record>
+        <record id="app_message_error_al_compartir_el_viaje" model="alventus.app.message">
+            <field name="code">error_al_compartir_el_viaje</field>
+            <field name="name">Compartir un viaje: Error al compartir el viaje</field>
+            <field name="default_text">Error al compartir el viaje</field>
+            <field name="sequence">90</field>
+        </record>
+        <record id="app_message_no_hay_usuarios_en_el_grupo_guias" model="alventus.app.message">
+            <field name="code">no_hay_usuarios_en_el_grupo_guias</field>
+            <field name="name">Compartir un viaje: No hay usuarios en el grupo &quot;Guías&quot; con quien compartir</field>
+            <field name="default_text">No hay usuarios en el grupo &quot;Guías&quot; con quien compartir</field>
+            <field name="sequence">100</field>
+        </record>
+        <record id="app_message_no_se_pudo_abrir_whatsapp" model="alventus.app.message">
+            <field name="code">no_se_pudo_abrir_whatsapp</field>
+            <field name="name">Compartir un viaje: No se pudo abrir WhatsApp</field>
+            <field name="default_text">No se pudo abrir WhatsApp</field>
+            <field name="sequence">110</field>
+        </record>
+        <record id="app_message_error_al_copiar_el_viaje" model="alventus.app.message">
+            <field name="code">error_al_copiar_el_viaje</field>
+            <field name="name">Copiar un viaje: Error al copiar el viaje</field>
+            <field name="default_text">Error al copiar el viaje</field>
+            <field name="sequence">120</field>
+        </record>
+        <record id="app_message_archivo_guardado_en_tu_telefono_lo_subire" model="alventus.app.message">
+            <field name="code">archivo_guardado_en_tu_telefono_lo_subire</field>
+            <field name="name">Detalle de una tarea: Archivo guardado en tu teléfono. Lo subiré cuando haya conexión.</field>
+            <field name="default_text">Archivo guardado en tu teléfono. Lo subiré cuando haya conexión.</field>
+            <field name="sequence">130</field>
+        </record>
+        <record id="app_message_el_archivo_esta_vacio" model="alventus.app.message">
+            <field name="code">el_archivo_esta_vacio</field>
+            <field name="name">Detalle de una tarea: El archivo está vacío</field>
+            <field name="default_text">El archivo está vacío</field>
+            <field name="sequence">140</field>
+        </record>
+        <record id="app_message_error_al_actualizar" model="alventus.app.message">
+            <field name="code">error_al_actualizar</field>
+            <field name="name">Detalle de una tarea: Error al actualizar</field>
+            <field name="default_text">Error al actualizar</field>
+            <field name="sequence">150</field>
+        </record>
+        <record id="app_message_hora_guardada_pero_el_aviso_no_falta" model="alventus.app.message">
+            <field name="code">hora_guardada_pero_el_aviso_no_falta</field>
+            <field name="name">Detalle de una tarea: Hora guardada, pero el aviso no: falta actualizar el módulo de Alventu</field>
+            <field name="default_text">Hora guardada, pero el aviso no: falta actualizar el módulo de Alventus en el servidor de Odoo.</field>
+            <field name="sequence">160</field>
+        </record>
+        <record id="app_message_pon_una_hora_distinta_de_las_00" model="alventus.app.message">
+            <field name="code">pon_una_hora_distinta_de_las_00</field>
+            <field name="name">Detalle de una tarea: Pon una hora distinta de las 00:00 (por ejemplo, 00:05).</field>
+            <field name="default_text">Pon una hora distinta de las 00:00 (por ejemplo, 00:05).</field>
+            <field name="sequence">170</field>
         </record>
         <record id="app_message_tarea_sin_nombre" model="alventus.app.message">
             <field name="code">tarea_sin_nombre</field>
-            <field name="name">Se intenta guardar una tarea sin nombre</field>
+            <field name="name">Detalle de una tarea: Vamos,vamos, ... donde se ha visto ... dale un nombre.</field>
             <field name="default_text">Vamos,vamos, ... donde se ha visto ... dale un nombre.</field>
-            <field name="sequence">40</field>
+            <field name="sequence">180</field>
+        </record>
+        <record id="app_message_ya_lo_siento_no_puedo_descargar_el" model="alventus.app.message">
+            <field name="code">ya_lo_siento_no_puedo_descargar_el</field>
+            <field name="name">Detalle de una tarea: Ya lo siento. No puedo descargar el archivo</field>
+            <field name="default_text">Ya lo siento. No puedo descargar el archivo</field>
+            <field name="sequence">190</field>
+        </record>
+        <record id="app_message_cachis_error_al_abrir_el_archivo" model="alventus.app.message">
+            <field name="code">cachis_error_al_abrir_el_archivo</field>
+            <field name="name">Detalle de una tarea: ¡Cachis! Error al abrir el archivo: {detalle}</field>
+            <field name="default_text">¡Cachis! Error al abrir el archivo: {detalle}</field>
+            <field name="sequence">200</field>
+        </record>
+        <record id="app_message_cachis_error_al_borrar_adjunto" model="alventus.app.message">
+            <field name="code">cachis_error_al_borrar_adjunto</field>
+            <field name="name">Detalle de una tarea: ¡Cachis! Error al borrar adjunto</field>
+            <field name="default_text">¡Cachis! Error al borrar adjunto</field>
+            <field name="sequence">210</field>
+        </record>
+        <record id="app_message_cachis_error_al_descargar_el_archivo" model="alventus.app.message">
+            <field name="code">cachis_error_al_descargar_el_archivo</field>
+            <field name="name">Detalle de una tarea: ¡Cachis! Error al descargar el archivo</field>
+            <field name="default_text">¡Cachis! Error al descargar el archivo</field>
+            <field name="sequence">220</field>
+        </record>
+        <record id="app_message_cachis_error_al_guardar_archivo_localmente" model="alventus.app.message">
+            <field name="code">cachis_error_al_guardar_archivo_localmente</field>
+            <field name="name">Detalle de una tarea: ¡Cachis! Error al guardar archivo localmente: {detalle}</field>
+            <field name="default_text">¡Cachis! Error al guardar archivo localmente: {detalle}</field>
+            <field name="sequence">230</field>
+        </record>
+        <record id="app_message_cachis_error_al_seleccionar_archivo" model="alventus.app.message">
+            <field name="code">cachis_error_al_seleccionar_archivo</field>
+            <field name="name">Detalle de una tarea: ¡Cachis! Error al seleccionar archivo: {detalle}</field>
+            <field name="default_text">¡Cachis! Error al seleccionar archivo: {detalle}</field>
+            <field name="sequence">240</field>
+        </record>
+        <record id="app_message_cachis_error_al_seleccionar_imagen" model="alventus.app.message">
+            <field name="code">cachis_error_al_seleccionar_imagen</field>
+            <field name="name">Detalle de una tarea: ¡Cachis! Error al seleccionar imagen: {detalle}</field>
+            <field name="default_text">¡Cachis! Error al seleccionar imagen: {detalle}</field>
+            <field name="sequence">250</field>
+        </record>
+        <record id="app_message_cachis_error_al_subir_archivo" model="alventus.app.message">
+            <field name="code">cachis_error_al_subir_archivo</field>
+            <field name="name">Detalle de una tarea: ¡Cachis! Error al subir archivo</field>
+            <field name="default_text">¡Cachis! Error al subir archivo</field>
+            <field name="sequence">260</field>
+        </record>
+        <record id="app_message_cachis_no_puedo_abrir_el_archivo" model="alventus.app.message">
+            <field name="code">cachis_no_puedo_abrir_el_archivo</field>
+            <field name="name">Detalle de una tarea: ¡Cachis! No puedo abrir el archivo</field>
+            <field name="default_text">¡Cachis! No puedo abrir el archivo</field>
+            <field name="sequence">270</field>
+        </record>
+        <record id="app_message_cachis_no_puedo_abrir_el_archivo_2" model="alventus.app.message">
+            <field name="code">cachis_no_puedo_abrir_el_archivo_2</field>
+            <field name="name">Detalle de una tarea: ¡Cachis! No puedo abrir el archivo: {detalle}</field>
+            <field name="default_text">¡Cachis! No puedo abrir el archivo: {detalle}</field>
+            <field name="sequence">280</field>
+        </record>
+        <record id="app_message_error_al_borrar_tarea" model="alventus.app.message">
+            <field name="code">error_al_borrar_tarea</field>
+            <field name="name">Detalle del viaje: Error al borrar tarea</field>
+            <field name="default_text">Error al borrar tarea</field>
+            <field name="sequence">290</field>
+        </record>
+        <record id="app_message_error_al_crear_tarea" model="alventus.app.message">
+            <field name="code">error_al_crear_tarea</field>
+            <field name="name">Detalle del viaje: Error al crear tarea</field>
+            <field name="default_text">Error al crear tarea</field>
+            <field name="sequence">300</field>
+        </record>
+        <record id="app_message_tarea_borrada_localmente_se_sincronizara_cuando_ha" model="alventus.app.message">
+            <field name="code">tarea_borrada_localmente_se_sincronizara_cuando_ha</field>
+            <field name="name">Detalle del viaje: Tarea borrada localmente. Se sincronizará cuando haya conexión.</field>
+            <field name="default_text">Tarea borrada localmente. Se sincronizará cuando haya conexión.</field>
+            <field name="sequence">310</field>
+        </record>
+        <record id="app_message_tarea_guardada_localmente_se_sincronizara_cuando_h" model="alventus.app.message">
+            <field name="code">tarea_guardada_localmente_se_sincronizara_cuando_h</field>
+            <field name="name">Detalle del viaje: Tarea guardada localmente. Se sincronizará cuando haya conexión.</field>
+            <field name="default_text">Tarea guardada localmente. Se sincronizará cuando haya conexión.</field>
+            <field name="sequence">320</field>
+        </record>
+        <record id="app_message_no_se_pudo_acceder_al_microfono" model="alventus.app.message">
+            <field name="code">no_se_pudo_acceder_al_microfono</field>
+            <field name="name">Dictado por voz: No se pudo acceder al micrófono.</field>
+            <field name="default_text">No se pudo acceder al micrófono.</field>
+            <field name="sequence">330</field>
+        </record>
+        <record id="app_message_no_se_pudo_descargar_el_modelo_de" model="alventus.app.message">
+            <field name="code">no_se_pudo_descargar_el_modelo_de</field>
+            <field name="name">Dictado por voz: No se pudo descargar el modelo de dictado. Comprueba tu conexión e int</field>
+            <field name="default_text">No se pudo descargar el modelo de dictado. Comprueba tu conexión e inténtalo de nuevo.</field>
+            <field name="sequence">340</field>
+        </record>
+        <record id="app_message_cachissssss_que_no_me_coincide" model="alventus.app.message">
+            <field name="code">cachissssss_que_no_me_coincide</field>
+            <field name="name">Entrar en la app: Cachissssss que no me coincide ... </field>
+            <field name="default_text">Cachissssss que no me coincide ... </field>
+            <field name="sequence">350</field>
+        </record>
+        <record id="app_message_no_te_tengo_guardado_sera_porque_es" model="alventus.app.message">
+            <field name="code">no_te_tengo_guardado_sera_porque_es</field>
+            <field name="name">Entrar en la app: No te tengo guardado. Será porque es la primera vez que entras aquí. V</field>
+            <field name="default_text">No te tengo guardado. Será porque es la primera vez que entras aquí. Vuelve cuando haya conexión.</field>
+            <field name="sequence">360</field>
+        </record>
+        <record id="app_message_alguna_tarea_no_se_pudo_mover_correctamente" model="alventus.app.message">
+            <field name="code">alguna_tarea_no_se_pudo_mover_correctamente</field>
+            <field name="name">Etapas del viaje: Alguna tarea no se pudo mover correctamente</field>
+            <field name="default_text">Alguna tarea no se pudo mover correctamente</field>
+            <field name="sequence">370</field>
+        </record>
+        <record id="app_message_esto_no_es_una_etapa_real_no" model="alventus.app.message">
+            <field name="code">esto_no_es_una_etapa_real_no</field>
+            <field name="name">Etapas del viaje: Esto no es una etapa real, no se puede borrar</field>
+            <field name="default_text">Esto no es una etapa real, no se puede borrar</field>
+            <field name="sequence">380</field>
+        </record>
+        <record id="app_message_etapa_borrada_pero_alguna_etapa_siguiente_no" model="alventus.app.message">
+            <field name="code">etapa_borrada_pero_alguna_etapa_siguiente_no</field>
+            <field name="name">Etapas del viaje: Etapa borrada, pero alguna etapa siguiente no se pudo renumerar</field>
+            <field name="default_text">Etapa borrada, pero alguna etapa siguiente no se pudo renumerar</field>
+            <field name="sequence">390</field>
+        </record>
+        <record id="app_message_hubo_un_problema_al_borrar_revisa_la" model="alventus.app.message">
+            <field name="code">hubo_un_problema_al_borrar_revisa_la</field>
+            <field name="name">Etapas del viaje: Hubo un problema al borrar (revisa la etapa en Odoo)</field>
+            <field name="default_text">Hubo un problema al borrar (revisa la etapa en Odoo)</field>
+            <field name="sequence">400</field>
+        </record>
+        <record id="app_message_no_se_pudieron_obtener_las_etapas" model="alventus.app.message">
+            <field name="code">no_se_pudieron_obtener_las_etapas</field>
+            <field name="name">Etapas del viaje: No se pudieron obtener las etapas</field>
+            <field name="default_text">No se pudieron obtener las etapas</field>
+            <field name="sequence">410</field>
+        </record>
+        <record id="app_message_no_se_pudo_anadir_la_etapa" model="alventus.app.message">
+            <field name="code">no_se_pudo_anadir_la_etapa</field>
+            <field name="name">Etapas del viaje: No se pudo añadir la etapa</field>
+            <field name="default_text">No se pudo añadir la etapa</field>
+            <field name="sequence">420</field>
+        </record>
+        <record id="app_message_no_se_pudo_guardar_la_descripcion" model="alventus.app.message">
+            <field name="code">no_se_pudo_guardar_la_descripcion</field>
+            <field name="name">Etapas del viaje: No se pudo guardar la descripción</field>
+            <field name="default_text">No se pudo guardar la descripción</field>
+            <field name="sequence">430</field>
+        </record>
+        <record id="app_message_sin_cobertura_no_consigo_identificar_esta_etapa" model="alventus.app.message">
+            <field name="code">sin_cobertura_no_consigo_identificar_esta_etapa</field>
+            <field name="name">Etapas del viaje: Sin cobertura no consigo identificar esta etapa. Abre este viaje una v</field>
+            <field name="default_text">Sin cobertura no consigo identificar esta etapa. Abre este viaje una vez con cobertura y vuelve a intentarlo.</field>
+            <field name="sequence">440</field>
+        </record>
+        <record id="app_message_cierra_la_app_del_todo_y_vuelve" model="alventus.app.message">
+            <field name="code">cierra_la_app_del_todo_y_vuelve</field>
+            <field name="name">Etapas y tareas / PDF: Cierra la app del todo y vuelve a abrirla con cobertura. Después ya po</field>
+            <field name="default_text">Cierra la app del todo y vuelve a abrirla con cobertura. Después ya podrás generar el PDF.</field>
+            <field name="sequence">450</field>
+        </record>
+        <record id="app_message_falta_terminar_de_actualizar_la_app" model="alventus.app.message">
+            <field name="code">falta_terminar_de_actualizar_la_app</field>
+            <field name="name">Etapas y tareas / PDF: Falta terminar de actualizar la app</field>
+            <field name="default_text">Falta terminar de actualizar la app</field>
+            <field name="sequence">460</field>
+        </record>
+        <record id="app_message_no_se_ha_podido_generar_el_pdf" model="alventus.app.message">
+            <field name="code">no_se_ha_podido_generar_el_pdf</field>
+            <field name="name">Etapas y tareas / PDF: No se ha podido generar el PDF: {detalle}</field>
+            <field name="default_text">No se ha podido generar el PDF: {detalle}</field>
+            <field name="sequence">470</field>
+        </record>
+        <record id="app_message_no_se_ha_podido_guardar_el_pdf" model="alventus.app.message">
+            <field name="code">no_se_ha_podido_guardar_el_pdf</field>
+            <field name="name">Etapas y tareas / PDF: No se ha podido guardar el PDF: {detalle}</field>
+            <field name="default_text">No se ha podido guardar el PDF: {detalle}</field>
+            <field name="sequence">480</field>
+        </record>
+        <record id="app_message_error_al_crear_el_viaje" model="alventus.app.message">
+            <field name="code">error_al_crear_el_viaje</field>
+            <field name="name">Nuevo viaje (datos): Error al crear el viaje: {detalle}</field>
+            <field name="default_text">Error al crear el viaje: {detalle}</field>
+            <field name="sequence">490</field>
+        </record>
+        <record id="app_message_selecciona_la_fecha_de_inicio" model="alventus.app.message">
+            <field name="code">selecciona_la_fecha_de_inicio</field>
+            <field name="name">Nuevo viaje (datos): Selecciona la fecha de inicio</field>
+            <field name="default_text">Selecciona la fecha de inicio</field>
+            <field name="sequence">500</field>
+        </record>
+        <record id="app_message_no_se_pudo_restaurar" model="alventus.app.message">
+            <field name="code">no_se_pudo_restaurar</field>
+            <field name="name">Papelera: No se pudo restaurar</field>
+            <field name="default_text">No se pudo restaurar</field>
+            <field name="sequence">510</field>
+        </record>
+        <record id="app_message_error_al_quitar_el_viaje" model="alventus.app.message">
+            <field name="code">error_al_quitar_el_viaje</field>
+            <field name="name">Quitar un viaje: Error al quitar el viaje</field>
+            <field name="default_text">Error al quitar el viaje</field>
+            <field name="sequence">520</field>
+        </record>
+        <record id="app_message_error_al_recuperar_el_viaje" model="alventus.app.message">
+            <field name="code">error_al_recuperar_el_viaje</field>
+            <field name="name">Recuperar un viaje: Error al recuperar el viaje</field>
+            <field name="default_text">Error al recuperar el viaje</field>
+            <field name="sequence">530</field>
+        </record>
+        <record id="app_message_error_al_crear_la_tarea" model="alventus.app.message">
+            <field name="code">error_al_crear_la_tarea</field>
+            <field name="name">Tareas de una etapa: Error al crear la tarea</field>
+            <field name="default_text">Error al crear la tarea</field>
+            <field name="sequence">540</field>
+        </record>
+        <record id="app_message_la_hora_desde_no_puede_ser_posterior" model="alventus.app.message">
+            <field name="code">la_hora_desde_no_puede_ser_posterior</field>
+            <field name="name">Tareas de una etapa: La hora &quot;desde&quot; no puede ser posterior a la hora &quot;hasta&quot; ya guardada</field>
+            <field name="default_text">La hora &quot;desde&quot; no puede ser posterior a la hora &quot;hasta&quot; ya guardada</field>
+            <field name="sequence">550</field>
+        </record>
+        <record id="app_message_la_hora_hasta_no_puede_ser_anterior" model="alventus.app.message">
+            <field name="code">la_hora_hasta_no_puede_ser_anterior</field>
+            <field name="name">Tareas de una etapa: La hora &quot;hasta&quot; no puede ser anterior a la hora &quot;desde&quot; ya guardada</field>
+            <field name="default_text">La hora &quot;hasta&quot; no puede ser anterior a la hora &quot;desde&quot; ya guardada</field>
+            <field name="sequence">560</field>
+        </record>
+        <record id="app_message_no_se_pudo_abrir_el_archivo" model="alventus.app.message">
+            <field name="code">no_se_pudo_abrir_el_archivo</field>
+            <field name="name">Tareas de una etapa: No se pudo abrir el archivo</field>
+            <field name="default_text">No se pudo abrir el archivo</field>
+            <field name="sequence">570</field>
+        </record>
+        <record id="app_message_no_se_pudo_abrir_el_archivo_2" model="alventus.app.message">
+            <field name="code">no_se_pudo_abrir_el_archivo_2</field>
+            <field name="name">Tareas de una etapa: No se pudo abrir el archivo: {detalle}</field>
+            <field name="default_text">No se pudo abrir el archivo: {detalle}</field>
+            <field name="sequence">580</field>
+        </record>
+        <record id="app_message_no_se_pudo_borrar_el_adjunto" model="alventus.app.message">
+            <field name="code">no_se_pudo_borrar_el_adjunto</field>
+            <field name="name">Tareas de una etapa: No se pudo borrar el adjunto</field>
+            <field name="default_text">No se pudo borrar el adjunto</field>
+            <field name="sequence">590</field>
+        </record>
+        <record id="app_message_no_se_pudo_cambiar_la_hora" model="alventus.app.message">
+            <field name="code">no_se_pudo_cambiar_la_hora</field>
+            <field name="name">Tareas de una etapa: No se pudo cambiar la hora</field>
+            <field name="default_text">No se pudo cambiar la hora</field>
+            <field name="sequence">600</field>
+        </record>
+        <record id="app_message_no_se_pudo_descargar_el_archivo" model="alventus.app.message">
+            <field name="code">no_se_pudo_descargar_el_archivo</field>
+            <field name="name">Tareas de una etapa: No se pudo descargar el archivo</field>
+            <field name="default_text">No se pudo descargar el archivo</field>
+            <field name="sequence">610</field>
+        </record>
+        <record id="app_message_archivo_s_subido_s_correctamente" model="alventus.app.message">
+            <field name="code">archivo_s_subido_s_correctamente</field>
+            <field name="name">Tareas de una etapa: {detalle} archivo(s) subido(s) correctamente</field>
+            <field name="default_text">{detalle} archivo(s) subido(s) correctamente</field>
+            <field name="sequence">620</field>
+        </record>
+        <record id="app_message_guardado_en_telefono" model="alventus.app.message">
+            <field name="code">guardado_en_telefono</field>
+            <field name="name">Toda la app: Cambios guardados en el teléfono. Cuando haya conexión se subirán al s</field>
+            <field name="default_text">Cambios guardados en el teléfono. Cuando haya conexión se subirán al servidor.</field>
+            <field name="sequence">630</field>
+        </record>
+        <record id="app_message_sin_cobertura" model="alventus.app.message">
+            <field name="code">sin_cobertura</field>
+            <field name="name">Toda la app: Lo siento. Tendrás que esperar a que tengas cobertura para hacerlo.</field>
+            <field name="default_text">Lo siento. Tendrás que esperar a que tengas cobertura para hacerlo.</field>
+            <field name="sequence">640</field>
+        </record>
+        <record id="app_message_viendo_datos_guardados" model="alventus.app.message">
+            <field name="code">viendo_datos_guardados</field>
+            <field name="name">Toda la app: NO hay conexión. Estás viendo los datos guardados en el teléfono la úl</field>
+            <field name="default_text">NO hay conexión. Estás viendo los datos guardados en el teléfono la última vez que usaste la app con conexión.</field>
+            <field name="sequence">650</field>
+        </record>
+        <record id="app_message_archivo_no_encontrado" model="alventus.app.message">
+            <field name="code">archivo_no_encontrado</field>
+            <field name="name">Viaje (datos generales): Archivo no encontrado</field>
+            <field name="default_text">Archivo no encontrado</field>
+            <field name="sequence">660</field>
+        </record>
+        <record id="app_message_contacto_guardado" model="alventus.app.message">
+            <field name="code">contacto_guardado</field>
+            <field name="name">Viaje (datos generales): Contacto guardado</field>
+            <field name="default_text">Contacto guardado</field>
+            <field name="sequence">670</field>
+        </record>
+        <record id="app_message_documento_no_encontrado" model="alventus.app.message">
+            <field name="code">documento_no_encontrado</field>
+            <field name="name">Viaje (datos generales): Documento no encontrado</field>
+            <field name="default_text">Documento no encontrado</field>
+            <field name="sequence">680</field>
+        </record>
+        <record id="app_message_el_documento_esta_vacio" model="alventus.app.message">
+            <field name="code">el_documento_esta_vacio</field>
+            <field name="name">Viaje (datos generales): El documento está vacío</field>
+            <field name="default_text">El documento está vacío</field>
+            <field name="sequence">690</field>
+        </record>
+        <record id="app_message_error_al_cargar_los_datos_del_viaje" model="alventus.app.message">
+            <field name="code">error_al_cargar_los_datos_del_viaje</field>
+            <field name="name">Viaje (datos generales): Error al cargar los datos del viaje: {detalle}</field>
+            <field name="default_text">Error al cargar los datos del viaje: {detalle}</field>
+            <field name="sequence">700</field>
+        </record>
+        <record id="app_message_foto_no_encontrada" model="alventus.app.message">
+            <field name="code">foto_no_encontrada</field>
+            <field name="name">Viaje (datos generales): Foto no encontrada</field>
+            <field name="default_text">Foto no encontrada</field>
+            <field name="sequence">710</field>
+        </record>
+        <record id="app_message_la_foto_esta_vacia" model="alventus.app.message">
+            <field name="code">la_foto_esta_vacia</field>
+            <field name="name">Viaje (datos generales): La foto está vacía</field>
+            <field name="default_text">La foto está vacía</field>
+            <field name="sequence">720</field>
+        </record>
+        <record id="app_message_lo_sentimos_en_el_iphone_safari_no" model="alventus.app.message">
+            <field name="code">lo_sentimos_en_el_iphone_safari_no</field>
+            <field name="name">Viaje (datos generales): Lo sentimos: en el iPhone, Safari no permite que ninguna página web (i</field>
+            <field name="default_text">Lo sentimos: en el iPhone, Safari no permite que ninguna página web (incluida esta) lea los contactos guardados en el teléfono. Es una limitación del propio Safari, no de esta app, y no depende de nosotros arreglarlo.
+
+Puedes crear el contacto a mano, o copiar el nombre/teléfono desde la app Contactos del iPhone y pegarlo aquí.</field>
+            <field name="sequence">730</field>
+        </record>
+        <record id="app_message_necesitas_conceder_permiso_de_contactos_del_telefo" model="alventus.app.message">
+            <field name="code">necesitas_conceder_permiso_de_contactos_del_telefo</field>
+            <field name="name">Viaje (datos generales): Necesitas conceder permiso de contactos del teléfono</field>
+            <field name="default_text">Necesitas conceder permiso de contactos del teléfono</field>
+            <field name="sequence">740</field>
+        </record>
+        <record id="app_message_ningun_archivo_valido_solo_gpx_kml_kmz" model="alventus.app.message">
+            <field name="code">ningun_archivo_valido_solo_gpx_kml_kmz</field>
+            <field name="name">Viaje (datos generales): Ningún archivo válido (solo .gpx, .kml, .kmz, .tcx, .geojson)</field>
+            <field name="default_text">Ningún archivo válido (solo .gpx, .kml, .kmz, .tcx, .geojson)</field>
+            <field name="sequence">750</field>
+        </record>
+        <record id="app_message_no_se_pudieron_abrir_los_contactos" model="alventus.app.message">
+            <field name="code">no_se_pudieron_abrir_los_contactos</field>
+            <field name="name">Viaje (datos generales): No se pudieron abrir los contactos</field>
+            <field name="default_text">No se pudieron abrir los contactos</field>
+            <field name="sequence">760</field>
+        </record>
+        <record id="app_message_no_se_pudo_abrir_el_contacto" model="alventus.app.message">
+            <field name="code">no_se_pudo_abrir_el_contacto</field>
+            <field name="name">Viaje (datos generales): No se pudo abrir el contacto</field>
+            <field name="default_text">No se pudo abrir el contacto</field>
+            <field name="sequence">770</field>
+        </record>
+        <record id="app_message_no_se_pudo_abrir_el_documento" model="alventus.app.message">
+            <field name="code">no_se_pudo_abrir_el_documento</field>
+            <field name="name">Viaje (datos generales): No se pudo abrir el documento</field>
+            <field name="default_text">No se pudo abrir el documento</field>
+            <field name="sequence">780</field>
+        </record>
+        <record id="app_message_no_se_pudo_abrir_el_documento_2" model="alventus.app.message">
+            <field name="code">no_se_pudo_abrir_el_documento_2</field>
+            <field name="name">Viaje (datos generales): No se pudo abrir el documento: {detalle}</field>
+            <field name="default_text">No se pudo abrir el documento: {detalle}</field>
+            <field name="sequence">790</field>
+        </record>
+        <record id="app_message_no_se_pudo_abrir_la_foto" model="alventus.app.message">
+            <field name="code">no_se_pudo_abrir_la_foto</field>
+            <field name="name">Viaje (datos generales): No se pudo abrir la foto</field>
+            <field name="default_text">No se pudo abrir la foto</field>
+            <field name="sequence">800</field>
+        </record>
+        <record id="app_message_no_se_pudo_abrir_la_foto_2" model="alventus.app.message">
+            <field name="code">no_se_pudo_abrir_la_foto_2</field>
+            <field name="name">Viaje (datos generales): No se pudo abrir la foto: {detalle}</field>
+            <field name="default_text">No se pudo abrir la foto: {detalle}</field>
+            <field name="sequence">810</field>
+        </record>
+        <record id="app_message_no_se_pudo_borrar_el_archivo" model="alventus.app.message">
+            <field name="code">no_se_pudo_borrar_el_archivo</field>
+            <field name="name">Viaje (datos generales): No se pudo borrar el archivo</field>
+            <field name="default_text">No se pudo borrar el archivo</field>
+            <field name="sequence">820</field>
+        </record>
+        <record id="app_message_no_se_pudo_borrar_el_documento" model="alventus.app.message">
+            <field name="code">no_se_pudo_borrar_el_documento</field>
+            <field name="name">Viaje (datos generales): No se pudo borrar el documento</field>
+            <field name="default_text">No se pudo borrar el documento</field>
+            <field name="sequence">830</field>
+        </record>
+        <record id="app_message_no_se_pudo_borrar_la_foto" model="alventus.app.message">
+            <field name="code">no_se_pudo_borrar_la_foto</field>
+            <field name="name">Viaje (datos generales): No se pudo borrar la foto</field>
+            <field name="default_text">No se pudo borrar la foto</field>
+            <field name="sequence">840</field>
+        </record>
+        <record id="app_message_no_se_pudo_descargar_el_documento" model="alventus.app.message">
+            <field name="code">no_se_pudo_descargar_el_documento</field>
+            <field name="name">Viaje (datos generales): No se pudo descargar el documento</field>
+            <field name="default_text">No se pudo descargar el documento</field>
+            <field name="sequence">850</field>
+        </record>
+        <record id="app_message_no_se_pudo_descargar_la_foto" model="alventus.app.message">
+            <field name="code">no_se_pudo_descargar_la_foto</field>
+            <field name="name">Viaje (datos generales): No se pudo descargar la foto</field>
+            <field name="default_text">No se pudo descargar la foto</field>
+            <field name="sequence">860</field>
+        </record>
+        <record id="app_message_no_se_pudo_descargar_ningun_archivo_de" model="alventus.app.message">
+            <field name="code">no_se_pudo_descargar_ningun_archivo_de</field>
+            <field name="name">Viaje (datos generales): No se pudo descargar ningún archivo de ruta</field>
+            <field name="default_text">No se pudo descargar ningún archivo de ruta</field>
+            <field name="sequence">870</field>
+        </record>
+        <record id="app_message_no_se_pudo_guardar_el_contacto" model="alventus.app.message">
+            <field name="code">no_se_pudo_guardar_el_contacto</field>
+            <field name="name">Viaje (datos generales): No se pudo guardar el contacto: {detalle}</field>
+            <field name="default_text">No se pudo guardar el contacto: {detalle}</field>
+            <field name="sequence">880</field>
+        </record>
+        <record id="app_message_no_se_pudo_leer_el_contacto_seleccionado" model="alventus.app.message">
+            <field name="code">no_se_pudo_leer_el_contacto_seleccionado</field>
+            <field name="name">Viaje (datos generales): No se pudo leer el contacto seleccionado</field>
+            <field name="default_text">No se pudo leer el contacto seleccionado</field>
+            <field name="sequence">890</field>
+        </record>
+        <record id="app_message_no_se_pudo_quitar_el_contacto" model="alventus.app.message">
+            <field name="code">no_se_pudo_quitar_el_contacto</field>
+            <field name="name">Viaje (datos generales): No se pudo quitar el contacto</field>
+            <field name="default_text">No se pudo quitar el contacto</field>
+            <field name="sequence">900</field>
+        </record>
+        <record id="app_message_no_se_pudo_renombrar_el_viaje" model="alventus.app.message">
+            <field name="code">no_se_pudo_renombrar_el_viaje</field>
+            <field name="name">Viaje (datos generales): No se pudo renombrar el viaje</field>
+            <field name="default_text">No se pudo renombrar el viaje</field>
+            <field name="sequence">910</field>
+        </record>
+        <record id="app_message_no_se_puede_leer_la_agenda_del" model="alventus.app.message">
+            <field name="code">no_se_puede_leer_la_agenda_del</field>
+            <field name="name">Viaje (datos generales): No se puede leer la agenda del iPhone</field>
+            <field name="default_text">No se puede leer la agenda del iPhone</field>
+            <field name="sequence">920</field>
+        </record>
+        <record id="app_message_sin_conexion_en_el_navegador_hace_falta" model="alventus.app.message">
+            <field name="code">sin_conexion_en_el_navegador_hace_falta</field>
+            <field name="name">Viaje (datos generales): Sin conexión: en el navegador hace falta conexión para subir archivos</field>
+            <field name="default_text">Sin conexión: en el navegador hace falta conexión para subir archivos</field>
+            <field name="sequence">930</field>
+        </record>
+        <record id="app_message_viaje_renombrado_correctamente" model="alventus.app.message">
+            <field name="code">viaje_renombrado_correctamente</field>
+            <field name="name">Viaje (datos generales): Viaje renombrado correctamente</field>
+            <field name="default_text">Viaje renombrado correctamente</field>
+            <field name="sequence">940</field>
+        </record>
+        <record id="app_message_guardado_en_tus_contactos" model="alventus.app.message">
+            <field name="code">guardado_en_tus_contactos</field>
+            <field name="name">Viaje (datos generales): {detalle} guardado en tus contactos</field>
+            <field name="default_text">{detalle} guardado en tus contactos</field>
+            <field name="sequence">950</field>
+        </record>
+        <record id="app_message_ya_esta_en_este_viaje" model="alventus.app.message">
+            <field name="code">ya_esta_en_este_viaje</field>
+            <field name="name">Viaje (datos generales): {detalle} ya está en este viaje</field>
+            <field name="default_text">{detalle} ya está en este viaje</field>
+            <field name="sequence">960</field>
         </record>
     </data>
 </odoo>

@@ -40,8 +40,19 @@ if (!window._flutter) {
 }
 _flutter.buildConfig = {"engineRevision":"5f77625673248ee5846fbcaf5d3e1a3878386fd7","wasmHashes":{"canvaskit.wasm":"2898c0795cf4a694e86ee3445c7414c2503fbcb46967154762f50ebde988da04","chromium/canvaskit.wasm":"ba4024133403777f41c709b9e76e9f4bdb76c73d33adba8645527a59d815d824","skwasm.wasm":"a957befea55cf597eeebcf3286f1b88f463f3ad8bfc13e55aa8f5d34cd2ade4d","skwasm_heavy.wasm":"781a14fc7e9cd387ee6df4a056f62af7e940c60cc42ce04571cc2e810042c588","webparagraph/canvaskit.wasm":"7a61c4ad71781875a80bbfc5ee6e49686dd190d629e0fe986d3ecc05ada58856","wimp.wasm":"7474f6074c42c4be503c9059c9b5058e468a68a8917ac6c3607f0da4922f7e5a"},"builds":[{"compileTarget":"dart2js","renderer":"canvaskit","mainJsPath":"main.dart.js"},{}],"useLocalCanvasKit":true};
 
-_flutter.loader.load({
-  serviceWorkerSettings: {
-    serviceWorkerVersion: "3455351791" /* Flutter's service worker is deprecated and will be removed in a future Flutter release. */
-  }
-});
+
+// Arranque de la app. Es la plantilla que usa "flutter build web" para
+// generar build/web/flutter_bootstrap.js: las dos líneas de arriba las
+// rellena Flutter solo al compilar (NO tocarlas).
+//
+// Por qué existe este archivo (antes se usaba el que genera Flutter por su
+// cuenta): el de Flutter registraba SU service worker
+// (flutter_service_worker.js), que está vacío a propósito y lo primero que
+// hace es darse de baja... en la MISMA dirección donde vive el nuestro,
+// offline_sw.js (el que permite usar la app sin cobertura y recibe los
+// avisos). Los dos se pisaban en cada arranque. Para la app sin cobertura
+// se notaba poco, pero los avisos van atados al service worker: cada vez
+// que Flutter lo daba de baja, el teléfono perdía la suscripción y dejaba
+// de recibir avisos. Así que aquí se arranca la app SIN service worker de
+// Flutter; el único es offline_sw.js, que registra index.html.
+_flutter.loader.load();

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Avisos en el teléfono de las tareas con hora de inicio.
+         Ver models/push_notification.py. Cada minuto mira si a alguna
+         tarea le toca ya su aviso. -->
+    <record id="ir_cron_alventus_push_task_reminders" model="ir.cron">
+        <field name="name">Alventus: avisos de tareas en el teléfono</field>
+        <field name="model_id" ref="model_alventus_push_subscription"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_send_task_reminders()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">minutes</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

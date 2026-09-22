@@ -16,6 +16,7 @@
                     <group>
                         <field name="fecha_desde" widget="datetime"/>
                         <field name="fecha_hasta" widget="datetime"/>
+                        <field name="aviso_antelacion" invisible="not fecha_desde"/>
                     </group>
                 </group>
             </xpath>

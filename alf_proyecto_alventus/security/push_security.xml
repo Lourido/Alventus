@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Cada usuario solo ve sus propios teléfonos registrados para avisos.
+         (La app no los lee directamente: pasa por los métodos app_* del
+         modelo, ver models/push_notification.py.) Administración ve todos. -->
+    <record id="rule_alventus_push_subscription_own" model="ir.rule">
+        <field name="name">Avisos push: solo los teléfonos propios</field>
+        <field name="model_id" ref="model_alventus_push_subscription"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_alventus_push_subscription_admin" model="ir.rule">
+        <field name="name">Avisos push: administración ve todos</field>
+        <field name="model_id" ref="model_alventus_push_subscription"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+</odoo>

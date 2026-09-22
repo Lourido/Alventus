@@ -20,3 +20,6 @@ access_project_stage_user_alf,project.stage.user.alf,project.model_project_task_
 access_project_stage_gestor_full,project.stage.gestor.full,project.model_project_task_type,alf_proyecto_alventus.group_gestor_viajes,1,1,1,1
 access_attachment_gestor_read,ir.attachment.gestor.read,base.model_ir_attachment,alf_proyecto_alventus.group_gestor_viajes,1,0,0,0
 access_attachment_gestor_write,ir.attachment.gestor.write,base.model_ir_attachment,alf_proyecto_alventus.group_gestor_viajes,0,1,1,1
+access_alventus_push_subscription_user,alventus.push.subscription.user,model_alventus_push_subscription,base.group_user,1,1,1,1
+access_alventus_push_subscription_admin,alventus.push.subscription.admin,model_alventus_push_subscription,base.group_system,1,1,1,1
+access_alventus_push_log_admin,alventus.push.log.admin,model_alventus_push_log,base.group_system,1,1,1,1

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Registro de uso de la app (ver models/app_usage.py). Solo lo ve
+         Administración. -->
+
+    <record id="view_alventus_app_session_list" model="ir.ui.view">
+        <field name="name">alventus.app.session.list</field>
+        <field name="model">alventus.app.session</field>
+        <field name="arch" type="xml">
+            <list string="Uso de la app">
+                <field name="user_id"/>
+                <field name="device_type"/>
+                <field name="device_detail" optional="show"/>
+                <field name="start"/>
+                <field name="last_activity"/>
+                <field name="event_count" sum="Acciones"/>
+                <field name="timezone" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_alventus_app_session_form" model="ir.ui.view">
+        <field name="name">alventus.app.session.form</field>
+        <field name="model">alventus.app.session</field>
+        <field name="arch" type="xml">
+            <form string="Uso de la app">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="user_id"/>
+                            <field name="device_type"/>
+                            <field name="device_detail"/>
+                        </group>
+                        <group>
+                            <field name="start"/>
+                            <field name="last_activity"/>
+                            <field name="event_count"/>
+                            <field name="timezone"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Qué ha hecho">
+                            <field name="event_ids" readonly="1">
+                                <list>
+                                    <field name="timestamp"/>
+                                    <field name="kind"/>
+                                    <field name="action"/>
+                                    <field name="detail"/>
+                                    <field name="offline"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_alventus_app_session_search" model="ir.ui.view">
+        <field name="name">alventus.app.session.search</field>
+        <field name="model">alventus.app.session</field>
+        <field name="arch" type="xml">
+            <search string="Uso de la app">
+                <field name="user_id"/>
+                <field name="device_detail"/>
+                <filter name="hoy" string="Hoy"
+                        domain="[('start', '&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]"/>
+                <filter name="ultimos_7" string="Últimos 7 días"
+                        domain="[('start', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter name="iphone" string="iPhone" domain="[('device_type', '=', 'ios')]"/>
+                <filter name="android" string="Android" domain="[('device_type', '=', 'android')]"/>
+                <group expand="0" string="Agrupar por">
+                    <filter name="por_usuario" string="Usuario" context="{'group_by': 'user_id'}"/>
+                    <filter name="por_telefono" string="Tipo de teléfono" context="{'group_by': 'device_type'}"/>
+                    <filter name="por_dia" string="Día" context="{'group_by': 'start:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_alventus_app_event_list" model="ir.ui.view">
+        <field name="name">alventus.app.event.list</field>
+        <field name="model">alventus.app.event</field>
+        <field name="arch" type="xml">
+            <list string="Qué hacen en la app">
+                <field name="timestamp"/>
+                <field name="user_id"/>
+                <field name="device_type"/>
+                <field name="kind" decoration-danger="kind == 'error'"/>
+                <field name="action" decoration-danger="kind == 'error'"/>
+                <field name="detail"/>
+                <field name="offline" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_alventus_app_event_search" model="ir.ui.view">
+        <field name="name">alventus.app.event.search</field>
+        <field name="model">alventus.app.event</field>
+        <field name="arch" type="xml">
+            <search string="Qué hacen en la app">
+                <field name="user_id"/>
+                <field name="action"/>
+                <field name="detail"/>
+                <filter name="hoy" string="Hoy"
+                        domain="[('timestamp', '&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]"/>
+                <separator/>
+                <filter name="solo_errores" string="Solo errores" domain="[('kind', '=', 'error')]"/>
+                <filter name="solo_acciones" string="Solo acciones" domain="[('kind', '=', 'action')]"/>
+                <filter name="solo_pantallas" string="Solo pantallas" domain="[('kind', '=', 'screen')]"/>
+                <group expand="0" string="Agrupar por">
+                    <filter name="por_usuario" string="Usuario" context="{'group_by': 'user_id'}"/>
+                    <filter name="por_accion" string="Qué hace" context="{'group_by': 'action'}"/>
+                    <filter name="por_dia" string="Día" context="{'group_by': 'timestamp:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_alventus_app_session" model="ir.actions.act_window">
+        <field name="name">Uso de la app (por sesión)</field>
+        <field name="res_model">alventus.app.session</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aquí aparecerá cada vez que alguien abra la app.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_alventus_app_event" model="ir.actions.act_window">
+        <field name="name">Uso de la app (detalle)</field>
+        <field name="res_model">alventus.app.event</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <menuitem id="menu_alventus_app_usage"
+              name="Registro de uso de la app"
+              parent="menu_project_main"
+              groups="base.group_system"
+              sequence="50"/>
+
+    <menuitem id="menu_alventus_app_session"
+              name="Por sesión (quién y cuándo)"
+              parent="menu_alventus_app_usage"
+              action="action_alventus_app_session"
+              groups="base.group_system"
+              sequence="1"/>
+
+    <menuitem id="menu_alventus_app_event"
+              name="Detalle (qué hace)"
+              parent="menu_alventus_app_usage"
+              action="action_alventus_app_event"
+              groups="base.group_system"
+              sequence="5"/>
+</odoo>

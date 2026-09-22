@@ -23,3 +23,9 @@ access_attachment_gestor_write,ir.attachment.gestor.write,base.model_ir_attachme
 access_alventus_push_subscription_user,alventus.push.subscription.user,model_alventus_push_subscription,base.group_user,1,1,1,1
 access_alventus_push_subscription_admin,alventus.push.subscription.admin,model_alventus_push_subscription,base.group_system,1,1,1,1
 access_alventus_push_log_admin,alventus.push.log.admin,model_alventus_push_log,base.group_system,1,1,1,1
+access_alventus_app_session_admin,alventus.app.session.admin,model_alventus_app_session,base.group_system,1,1,1,1
+access_alventus_app_event_admin,alventus.app.event.admin,model_alventus_app_event,base.group_system,1,1,1,1
+access_alventus_app_session_user,alventus.app.session.user,model_alventus_app_session,base.group_user,1,0,1,0
+access_alventus_app_event_user,alventus.app.event.user,model_alventus_app_event,base.group_user,0,0,1,0
+access_alventus_app_message_admin,alventus.app.message.admin,model_alventus_app_message,base.group_system,1,1,1,1
+access_alventus_app_message_user,alventus.app.message.user,model_alventus_app_message,base.group_user,1,0,0,0

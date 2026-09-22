@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Mensajes de la app que se pueden personalizar (ver
+         models/app_message.py). -->
+
+    <record id="view_alventus_app_message_list" model="ir.ui.view">
+        <field name="name">alventus.app.message.list</field>
+        <field name="model">alventus.app.message</field>
+        <field name="arch" type="xml">
+            <list string="Mensajes de la app" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="default_text" readonly="1"/>
+                <field name="text" placeholder="Escribe aquí tu mensaje (vacío = el original)"/>
+                <field name="code" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_alventus_app_message_form" model="ir.ui.view">
+        <field name="name">alventus.app.message.form</field>
+        <field name="model">alventus.app.message</field>
+        <field name="arch" type="xml">
+            <form string="Mensaje de la app">
+                <header>
+                    <button name="action_restore_default" type="object"
+                            string="Volver al texto original" class="btn-secondary"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="code" readonly="1"/>
+                    </group>
+                    <group string="Texto original de la app">
+                        <field name="default_text" nolabel="1" readonly="1"/>
+                    </group>
+                    <group string="Tu mensaje (vacío = el original)">
+                        <field name="text" nolabel="1"
+                               placeholder="Escribe aquí el texto que quieres que vea el usuario"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_alventus_app_message" model="ir.actions.act_window">
+        <field name="name">Mensajes de la app</field>
+        <field name="res_model">alventus.app.message</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aquí puedes cambiar los avisos y errores que ve el usuario en la app.
+            </p><p>
+                Escribe tu texto en "Tu mensaje". Se aplica la próxima vez que
+                cada usuario abra la app con cobertura.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_alventus_app_message"
+              name="Mensajes de la app"
+              parent="menu_project_main"
+              action="action_alventus_app_message"
+              groups="base.group_system"
+              sequence="45"/>
+</odoo>

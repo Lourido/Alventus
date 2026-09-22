@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Fichas de los mensajes que la app permite personalizar. El CÓDIGO
+         tiene que coincidir con el de lib/utils/app_messages.dart.
+         "text" (el mensaje personalizado) NO se pone aquí a propósito: así
+         al actualizar el módulo nunca se pisa lo que haya escrito el
+         usuario. -->
+    <data noupdate="0">
+        <record id="app_message_sin_cobertura" model="alventus.app.message">
+            <field name="code">sin_cobertura</field>
+            <field name="name">Sin cobertura: algo que solo se puede hacer con conexión</field>
+            <field name="default_text">Lo siento. Tendrás que esperar a que tengas cobertura para hacerlo.</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="app_message_guardado_en_telefono" model="alventus.app.message">
+            <field name="code">guardado_en_telefono</field>
+            <field name="name">Sin cobertura: el cambio se ha guardado en el teléfono</field>
+            <field name="default_text">Cambios guardados en el teléfono. Cuando haya conexión se subirán al servidor.</field>
+            <field name="sequence">20</field>
+        </record>
+        <record id="app_message_viendo_datos_guardados" model="alventus.app.message">
+            <field name="code">viendo_datos_guardados</field>
+            <field name="name">Sin cobertura: se están viendo los datos guardados</field>
+            <field name="default_text">NO hay conexión. Estás viendo los datos guardados en el teléfono la última vez que usaste la app con conexión.</field>
+            <field name="sequence">30</field>
+        </record>
+        <record id="app_message_tarea_sin_nombre" model="alventus.app.message">
+            <field name="code">tarea_sin_nombre</field>
+            <field name="name">Se intenta guardar una tarea sin nombre</field>
+            <field name="default_text">Vamos,vamos, ... donde se ha visto ... dale un nombre.</field>
+            <field name="sequence">40</field>
+        </record>
+    </data>
+</odoo>

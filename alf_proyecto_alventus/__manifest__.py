@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'ALF - Gestión de Viajes (ICS)',
-    'version': '18.0.9.6.0',
+    'version': '18.0.9.8.0',
     'category': 'Project',
     'summary': 'Gestión de viajes con importación/exportación ICS y creación por días',
     'depends': ['project'],
@@ -10,6 +10,8 @@
         'security/ir.model.access.csv',
         'data/res_users.xml',
         'data/push_cron.xml',
+        'data/usage_cron.xml',
+        'data/app_messages.xml',
         'security/push_security.xml',
         'views/project_duplicate_wizard_views.xml',
         'views/project_photo_upload_wizard_views.xml',  # 👈 AÑADE ESTA LÍNEA
@@ -18,6 +20,8 @@
         'views/project_task_type_views.xml',  # 👈 NUEVO
         'views/project_wizard_views.xml',       
         'views/project_menu_views.xml',        
+        'views/app_usage_views.xml',
+        'views/app_message_views.xml',
         'views/project_photo_views.xml',  # 👈 AÑADE ESTA LÍNEA
     ],
     'assets': {

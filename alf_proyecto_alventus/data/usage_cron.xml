@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Borra cada noche el registro de uso de la app de más de 3 meses.
+         Ver models/app_usage.py. -->
+    <record id="ir_cron_alventus_clean_usage_log" model="ir.cron">
+        <field name="name">Alventus: limpiar el registro de uso de la app</field>
+        <field name="model_id" ref="model_alventus_app_session"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_clean_usage_log()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="nextcall" eval="(DateTime.now().replace(hour=3, minute=30, second=0) + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

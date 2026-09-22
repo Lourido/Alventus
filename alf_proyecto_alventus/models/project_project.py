@@ -4,7 +4,7 @@ import re
 from datetime import datetime, timedelta
 
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 
 
 class ProjectProject(models.Model):
@@ -146,6 +146,55 @@ class ProjectProject(models.Model):
         self.ensure_one()
         self.write({'invisible': not self.invisible})
         return True
+
+    # ------------------------------------------------------------------
+    # Contactos de referencia: sin teléfonos repetidos en un mismo viaje
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def _alventus_phone_key(phone):
+        """Teléfono reducido a sus dígitos, para comparar números escritos
+        de formas distintas ("+34 600 11 22 33", "0034600112233" y
+        "600112233" son el mismo). Se quita el prefijo internacional (00 o
+        +) y, si queda un número largo, se compara por sus últimas 9 cifras
+        (las del número sin prefijo de país). La app hace lo mismo (ver
+        normalizePhoneKey en lib/models/reference_contact.dart)."""
+        digits = re.sub(r'\D', '', phone or '')
+        if digits.startswith('00'):
+            digits = digits[2:]
+        if len(digits) > 9:
+            digits = digits[-9:]
+        return digits if len(digits) >= 6 else ''
+
+    def _alventus_duplicate_phones(self):
+        """Grupos de contactos de este viaje que comparten teléfono:
+        {clave: [nombres]} (solo los que tienen 2 o más)."""
+        self.ensure_one()
+        grupos = {}
+        for partner in self.reference_contact_ids:
+            clave = self._alventus_phone_key(partner.phone)
+            if clave:
+                grupos.setdefault(clave, []).append(partner.name or '')
+        return {k: v for k, v in grupos.items() if len(v) > 1}
+
+    def write(self, vals):
+        """No deja AÑADIR a un viaje un contacto con el mismo teléfono que otro
+        que ya esté. Solo se queja de repeticiones nuevas: si un viaje ya
+        tenía dos contactos repetidos de antes, se le puede seguir tocando
+        (por ejemplo, para quitar uno de los dos)."""
+        if 'reference_contact_ids' not in vals:
+            return super().write(vals)
+        antes = {p.id: set(p._alventus_duplicate_phones()) for p in self}
+        res = super().write(vals)
+        for project in self:
+            repetidos = project._alventus_duplicate_phones()
+            nuevos = set(repetidos) - antes.get(project.id, set())
+            if nuevos:
+                nombres = repetidos[sorted(nuevos)[0]]
+                raise ValidationError(
+                    'Ya hay un contacto con ese teléfono en este viaje: %s.'
+                    % ' y '.join(nombres))
+        return res
 
     @api.model_create_multi
     def create(self, vals_list):

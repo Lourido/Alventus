@@ -344,10 +344,13 @@ class AlventusPushSubscription(models.Model):
         puede_ver = {}  # (usuario, viaje) -> bool
 
         for tarea in tareas:
+            minutos_antes = tarea._alventus_offset_minutes()
+            if minutos_antes is None:  # "Sin aviso"
+                continue
             inicio = tarea._alventus_start_local()
             if not inicio:
                 continue
-            momento = inicio - timedelta(minutes=tarea._alventus_offset_minutes())
+            momento = inicio - timedelta(minutes=minutos_antes)
             for zona, subs_zona in por_zona.items():
                 ahora = ahora_local[zona]
                 if not (momento <= ahora < momento + AVISO_MARGEN):
@@ -392,6 +395,7 @@ class AlventusPushSubscription(models.Model):
         por_fecha = [('fecha_desde', '>=', desde), ('fecha_desde', '<', hasta)]
         dominio = expression.AND([
             [('fecha_desde', '!=', False), ('project_id', '!=', False),
+             ('aviso_antelacion', '!=', 'no'),
              ('project_id.invisible', '=', False)],
             expression.OR(por_nombre + [por_fecha]),
         ])
@@ -416,7 +420,10 @@ class ProjectTaskPush(models.Model):
     _inherit = 'project.task'
 
     def _alventus_offset_minutes(self):
+        """Minutos de antelación del aviso, o None si la tarea es "Sin aviso"."""
         self.ensure_one()
+        if self.aviso_antelacion == 'no':
+            return None
         try:
             return int(self.aviso_antelacion or 0)
         except (TypeError, ValueError):
@@ -445,7 +452,7 @@ class ProjectTaskPush(models.Model):
     def _alventus_push_message(self, inicio):
         self.ensure_one()
         hora = inicio.strftime('%H:%M')
-        minutos = self._alventus_offset_minutes()
+        minutos = self._alventus_offset_minutes() or 0
         if minutos >= 60:
             cuando = 'Empieza dentro de 1 hora'
         elif minutos > 0:

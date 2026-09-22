@@ -16,11 +16,13 @@ class ProjectTask(models.Model):
             ('15', '15 minutos antes'),
             ('30', '30 minutos antes'),
             ('60', '1 hora antes'),
+            ('no', 'Sin aviso'),
         ],
         string='Aviso en el teléfono',
         default='0',
         help='Si la tarea tiene hora de inicio, cuándo llega el aviso a los '
-             'teléfonos que tienen activados los avisos.',
+             'teléfonos que tienen activados los avisos. "Sin aviso": la tarea '
+             'conserva su hora pero no avisa.',
     )
 
     def copy(self, default=None):
